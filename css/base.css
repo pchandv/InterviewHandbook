@@ -1,0 +1,327 @@
+/* ═══════════════════════════════════════════════════════════════════
+   BASE STYLES — Reset, Typography, Layout Foundation
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Reset ──────────────────────────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height);
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* ─── Typography ─────────────────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-heading);
+    font-weight: var(--font-weight-semibold);
+    line-height: var(--line-height-tight);
+    margin-top: var(--space-xl);
+    margin-bottom: var(--space-md);
+}
+
+h1 { font-size: var(--font-size-4xl); font-weight: var(--font-weight-bold); }
+h2 { font-size: var(--font-size-3xl); }
+h3 { font-size: var(--font-size-2xl); }
+h4 { font-size: var(--font-size-xl); }
+h5 { font-size: var(--font-size-lg); }
+h6 { font-size: var(--font-size-md); }
+
+p {
+    margin-bottom: var(--space-md);
+    color: var(--text-primary);
+}
+
+a {
+    color: var(--text-link);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+}
+
+a:hover {
+    color: var(--text-link-hover);
+    text-decoration: underline;
+}
+
+a:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+strong, b { font-weight: var(--font-weight-semibold); }
+
+code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background-color: var(--bg-code);
+    color: var(--text-code);
+    padding: 0.15em 0.4em;
+    border-radius: var(--radius-sm);
+    border: var(--border-width) solid var(--border-code);
+}
+
+pre {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    line-height: 1.6;
+    background-color: var(--bg-code);
+    border: var(--border-width) solid var(--border-code);
+    border-radius: var(--radius-lg);
+    padding: var(--space-lg);
+    overflow-x: auto;
+    margin: var(--space-md) 0 var(--space-lg);
+    position: relative;
+    box-shadow: var(--shadow-sm);
+}
+
+pre code {
+    background: none;
+    border: none;
+    padding: 0;
+    font-size: inherit;
+    tab-size: 4;
+}
+
+blockquote {
+    border-left: 4px solid var(--brand-primary);
+    padding: var(--space-md) var(--space-lg);
+    margin: var(--space-md) 0;
+    background-color: var(--bg-secondary);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    color: var(--text-secondary);
+}
+
+ul, ol {
+    padding-left: var(--space-xl);
+    margin-bottom: var(--space-md);
+}
+
+li {
+    margin-bottom: var(--space-xs);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: var(--space-md) 0 var(--space-lg);
+    font-size: var(--font-size-sm);
+}
+
+th, td {
+    padding: var(--space-sm) var(--space-md);
+    text-align: left;
+    border: var(--border-width) solid var(--border-primary);
+}
+
+th {
+    background-color: var(--bg-secondary);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-heading);
+}
+
+tr:hover {
+    background-color: var(--bg-hover);
+}
+
+hr {
+    border: none;
+    border-top: var(--border-width) solid var(--border-primary);
+    margin: var(--space-xl) 0;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+/* ─── Selection ──────────────────────────────────────────────────── */
+::selection {
+    background-color: var(--brand-primary);
+    color: white;
+}
+
+/* ─── Focus ──────────────────────────────────────────────────────── */
+:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+}
+
+/* ─── Print ──────────────────────────────────────────────────────── */
+@media print {
+    body {
+        background: white;
+        color: black;
+        font-size: 12pt;
+    }
+    
+    .no-print, .sidebar, .header, .toc-panel, .breadcrumb-bar {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin: 0;
+        padding: 0;
+        max-width: 100%;
+    }
+    
+    pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        border: 1px solid #ddd;
+    }
+    
+    a { color: black; text-decoration: underline; }
+    a[href]::after { content: " (" attr(href) ")"; font-size: 0.8em; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PREMIUM POLISH — Enhanced visual refinements
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Custom Scrollbars ──────────────────────────────────────────── */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+}
+
+/* ─── Improved Tables ────────────────────────────────────────────── */
+th {
+    background-color: var(--bg-secondary);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-heading);
+    white-space: nowrap;
+}
+
+tr:hover td {
+    background-color: var(--bg-hover);
+}
+
+/* ─── Better inline code ─────────────────────────────────────────── */
+:not(pre) > code {
+    font-weight: var(--font-weight-medium);
+    white-space: nowrap;
+}
+
+/* ─── Smooth page transitions ────────────────────────────────────── */
+.main-content {
+    scroll-behavior: smooth;
+}
+
+/* ─── Reduced motion preference ──────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    html { scroll-behavior: auto; }
+}
+
+/* ─── Better selection ───────────────────────────────────────────── */
+::selection {
+    background-color: rgba(0, 120, 212, 0.2);
+    color: var(--text-primary);
+}
+
+/* ─── Focus-visible only (no outline on click, only keyboard) ────── */
+:focus:not(:focus-visible) {
+    outline: none;
+}
+
+:focus-visible {
+    outline: 2px solid var(--border-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+}
+
+/* ─── Skip Link (accessibility) ──────────────────────────────────── */
+.skip-link {
+    position: absolute;
+    top: -100%;
+    left: var(--space-md);
+    z-index: 9999;
+    padding: var(--space-sm) var(--space-lg);
+    background: var(--brand-primary);
+    color: #fff;
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-semibold);
+    text-decoration: none;
+    transition: top var(--transition-fast);
+}
+
+.skip-link:focus {
+    top: var(--space-md);
+}
+
+/* ─── High Contrast Mode ─────────────────────────────────────────── */
+@media (forced-colors: active) {
+    .card, .roadmap-node, .cmd-palette {
+        border: 2px solid CanvasText;
+    }
+    .progress-fill, .node-progress-fill, .streak-cell.streak-active {
+        background: Highlight;
+    }
+    .hero-section {
+        background: Canvas;
+        border: 2px solid CanvasText;
+        color: CanvasText;
+    }
+}
+
+/* ─── Print styles ───────────────────────────────────────────────── */
+@media print {
+    .hero-section, .card-grid, .page-nav, .streak-card, .radar-card {
+        break-inside: avoid;
+    }
+}

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="96" fill="#0078d4"/>
+  <g fill="#ffffff">
+    <!-- open book -->
+    <path d="M256 140c-40-26-92-30-140-14v226c48-16 100-12 140 14 40-26 92-30 140-14V126c-48-16-100-12-140 14z" opacity="0.15"/>
+    <path d="M256 156c-36-22-82-26-124-13a12 12 0 0 0-8 11v196a10 10 0 0 0 13 9c38-12 82-8 119 13v-216z"/>
+    <path d="M256 156c36-22 82-26 124-13a12 12 0 0 1 8 11v196a10 10 0 0 1-13 9c-38-12-82-8-119 13v-216z"/>
+  </g>
+  <text x="256" y="470" font-family="Segoe UI, Arial, sans-serif" font-size="70" font-weight="700" fill="#ffffff" text-anchor="middle">IH</text>
+</svg>

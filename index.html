@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interview Preparation Handbook for Senior Software Engineers, Technical Leads, and Solution Architects (12+ Years Experience)">
+    <title>Interview Handbook — Senior Engineer</title>
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/tokens.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/pages.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📘</text></svg>">
+
+    <!-- PWA -->
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta name="theme-color" content="#0078d4">
+    <link rel="apple-touch-icon" href="assets/icon.svg">
+    
+    <!-- Mermaid.js for architecture diagrams (vendored for offline use) -->
+    <script src="vendor/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ 
+            startOnLoad: false,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#4f46e5',
+                primaryTextColor: '#1e293b',
+                primaryBorderColor: '#6366f1',
+                lineColor: '#94a3b8',
+                secondaryColor: '#f1f5f9',
+                tertiaryColor: '#f8fafc',
+                fontFamily: 'Inter, system-ui, sans-serif',
+                fontSize: '16px'
+            },
+            flowchart: { useMaxWidth: false, htmlLabels: true, curve: 'basis', padding: 16 },
+            sequence: { useMaxWidth: false, mirrorActors: false, messageMargin: 40 }
+        });
+    </script>
+</head>
+<body>
+    <!-- ═══════════════════ APP SHELL ═══════════════════ -->
+    <!-- Skip link for keyboard navigation -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <div class="app-shell">
+        
+        <!-- ─── Header ─────────────────────────────────── -->
+        <header class="header" role="banner">
+            <div class="header-left">
+                <button class="btn btn-ghost btn-icon" id="menu-toggle" aria-label="Toggle navigation menu">
+                    <span class="icon-menu"></span>
+                </button>
+                <a class="header-brand" href="#home">
+                    <span class="brand-icon"></span>
+                    <span>Interview Handbook</span>
+                </a>
+            </div>
+            
+            <div class="header-center">
+                <div class="search-container">
+                    <span class="search-icon"></span>
+                    <input type="search" 
+                           id="search-input" 
+                           class="search-input" 
+                           placeholder="Search topics, questions, concepts..." 
+                           aria-label="Search"
+                           autocomplete="off">
+                    <span class="search-shortcut">Ctrl+K</span>
+                    <div id="search-results" class="search-results" role="listbox" aria-live="polite"></div>
+                </div>
+            </div>
+            
+            <div class="header-right">
+                <button class="btn btn-ghost btn-icon tooltip" id="layout-toggle" data-tooltip="Toggle nav layout" aria-label="Toggle navigation layout">
+                    <span class="icon-layout"></span>
+                </button>
+                <button class="btn btn-ghost btn-icon tooltip" id="theme-toggle" data-tooltip="Toggle theme" aria-label="Toggle theme">
+                    <span class="icon-theme"></span>
+                </button>
+                <button class="btn btn-ghost btn-icon tooltip" id="progress-btn" data-tooltip="Progress" aria-label="View progress">
+                    <span class="icon-progress"></span>
+                </button>
+                <button class="btn btn-ghost btn-icon tooltip" id="bookmarks-btn" data-tooltip="Bookmarks" aria-label="View bookmarks">
+                    <span class="icon-bookmarks"></span>
+                </button>
+            </div>
+        </header>
+        
+        <!-- ─── Sidebar ────────────────────────────────── -->
+        <aside class="sidebar" role="navigation" aria-label="Main navigation">
+            <nav id="sidebar-nav"></nav>
+        </aside>
+        
+        <!-- ─── Sidebar Overlay (mobile) ───────────────── -->
+        <div class="sidebar-overlay" aria-hidden="true"></div>
+        
+        <!-- ─── Main Area ──────────────────────────────── -->
+        <div class="main-area">
+            <!-- Reading Progress Bar -->
+            <div class="reading-progress-bar" aria-hidden="true">
+                <div class="progress-fill" id="reading-progress"></div>
+            </div>
+            
+            <!-- Breadcrumb -->
+            <nav class="breadcrumb-bar" aria-label="Breadcrumb" id="breadcrumb"></nav>
+            
+            <!-- Content + TOC -->
+            <div class="content-wrapper">
+                <main class="main-content" id="main-content" role="main" aria-label="Page content">
+                    <!-- Dynamic content loaded here -->
+                </main>
+                
+                <!-- Table of Contents (Right Panel) -->
+                <aside class="toc-panel" aria-label="Table of contents">
+                    <div class="toc-title">On this page</div>
+                    <ul class="toc-list" id="toc-list"></ul>
+                </aside>
+            </div>
+        </div>
+    </div>
+    
+    <!-- ═══════════════════ MODALS ═══════════════════ -->
+    
+    <!-- Keyboard Shortcuts Modal -->
+    <div class="modal-overlay" id="shortcuts-modal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-labelledby="shortcuts-title">
+            <div class="modal-header">
+                <h2 class="modal-title" id="shortcuts-title">Keyboard Shortcuts</h2>
+                <button class="btn btn-ghost btn-icon modal-close" aria-label="Close">×</button>
+            </div>
+            <div class="modal-body"></div>
+        </div>
+    </div>
+    
+    <!-- Bookmarks Modal -->
+    <div class="modal-overlay" id="bookmarks-modal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-labelledby="bookmarks-title">
+            <div class="modal-header">
+                <h2 class="modal-title" id="bookmarks-title">Bookmarked Questions</h2>
+                <button class="btn btn-ghost btn-icon modal-close" aria-label="Close">×</button>
+            </div>
+            <div class="modal-body"></div>
+        </div>
+    </div>
+    
+    <!-- Progress Modal -->
+    <div class="modal-overlay" id="progress-modal" aria-hidden="true">
+        <div class="modal" role="dialog" aria-labelledby="progress-title">
+            <div class="modal-header">
+                <h2 class="modal-title" id="progress-title">Your Progress</h2>
+                <button class="btn btn-ghost btn-icon modal-close" aria-label="Close">×</button>
+            </div>
+            <div class="modal-body"></div>
+        </div>
+    </div>
+    
+    <!-- Toast Container -->
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
+    
+    <!-- ═══════════════════ SCRIPTS ═══════════════════ -->
+    <script src="js/icons.js"></script>
+    <script src="js/sitemap.js"></script>
+    <script src="js/theme.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/progress.js"></script>
+    <script src="js/interview-progress.js"></script>
+    <script src="js/scrollspy.js"></script>
+    <script src="js/keyboard.js"></script>
+    <script src="js/page-loader.js"></script>
+    <script src="js/code-blocks.js"></script>
+    <script src="js/quiz.js"></script>
+    
+    <!-- Data Registry (must load before data modules) -->
+    <script src="data/page-data.js"></script>
+    
+    <!-- Lazy Loader (loads data modules on demand) -->
+    <script src="js/lazy-loader.js"></script>
+    
+    <!-- App Init (last) -->
+    <script src="js/app.js"></script>
+
+    <!-- Service Worker registration (offline / PWA) -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').catch((err) => {
+                    console.warn('[SW] registration failed:', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>

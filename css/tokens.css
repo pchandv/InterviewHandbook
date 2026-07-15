@@ -1,0 +1,249 @@
+/* ═══════════════════════════════════════════════════════════════════
+   DESIGN TOKENS — Interview Preparation Handbook
+   Microsoft Learn / Angular Docs inspired
+   ═══════════════════════════════════════════════════════════════════ */
+
+:root {
+    /* ─── Brand ──────────────────────────────────────────────────── */
+    --brand-primary: #0078d4;
+    --brand-primary-hover: #106ebe;
+    --brand-primary-active: #005a9e;
+    --brand-secondary: #00b7c3;
+    --brand-accent: #8661c5;
+    --brand-success: #107c10;
+    --brand-warning: #ff8c00;
+    --brand-error: #d13438;
+    --brand-info: #0078d4;
+
+    /* ─── Typography ─────────────────────────────────────────────── */
+    --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+    --font-mono: 'Cascadia Code', 'Fira Code', 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.8125rem;
+    --font-size-base: 0.9375rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.125rem;
+    --font-size-xl: 1.25rem;
+    --font-size-2xl: 1.5rem;
+    --font-size-3xl: 1.875rem;
+    --font-size-4xl: 2.25rem;
+    --line-height: 1.6;
+    --line-height-tight: 1.3;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* ─── Spacing ────────────────────────────────────────────────── */
+    --space-xs: 0.25rem;
+    --space-sm: 0.5rem;
+    --space-md: 1rem;
+    --space-lg: 1.5rem;
+    --space-xl: 2rem;
+    --space-2xl: 3rem;
+    --space-3xl: 4rem;
+
+    /* ─── Borders & Radius ───────────────────────────────────────── */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-xl: 12px;
+    --radius-full: 9999px;
+    --border-width: 1px;
+
+    /* ─── Shadows ────────────────────────────────────────────────── */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
+
+    /* ─── Transitions ────────────────────────────────────────────── */
+    --transition-fast: 150ms ease;
+    --transition-base: 250ms ease;
+    --transition-slow: 350ms ease;
+
+    /* ─── Layout ─────────────────────────────────────────────────── */
+    --sidebar-width: 280px;
+    --sidebar-width-collapsed: 0px;
+    --header-height: 56px;
+    --breadcrumb-height: 40px;
+    --content-max-width: 900px;
+    --toc-width: 220px;
+
+    /* ─── Z-Index ────────────────────────────────────────────────── */
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-overlay: 300;
+    --z-modal: 400;
+    --z-toast: 500;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LIGHT THEME (default)
+   ═══════════════════════════════════════════════════════════════════ */
+[data-theme="light"] {
+    --bg-primary: #ffffff;
+    --bg-secondary: #f8f9fa;
+    --bg-tertiary: #f3f2f1;
+    --bg-elevated: #ffffff;
+    --bg-code: #f6f8fa;
+    --bg-code-highlight: #fffbdd;
+    --bg-hover: rgba(0, 0, 0, 0.04);
+    --bg-active: rgba(0, 120, 212, 0.08);
+    --bg-sidebar: #f8f9fa;
+    --bg-header: #ffffff;
+    --bg-card: #ffffff;
+    --bg-tooltip: #323130;
+    --bg-modal-overlay: rgba(0, 0, 0, 0.4);
+
+    --text-primary: #1b1b1b;
+    --text-secondary: #605e5c;
+    --text-tertiary: #8a8886;
+    --text-inverse: #ffffff;
+    --text-link: #0078d4;
+    --text-link-hover: #106ebe;
+    --text-code: #1b1b1b;
+    --text-heading: #1b1b1b;
+
+    --border-primary: #edebe9;
+    --border-secondary: #e1dfdd;
+    --border-focus: #0078d4;
+    --border-code: #e1dfdd;
+
+    --scrollbar-track: #f3f2f1;
+    --scrollbar-thumb: #c8c6c4;
+    --scrollbar-thumb-hover: #a19f9d;
+
+    /* Syntax highlighting — light */
+    --syntax-keyword: #0000ff;
+    --syntax-string: #a31515;
+    --syntax-number: #098658;
+    --syntax-comment: #008000;
+    --syntax-function: #795e26;
+    --syntax-class: #267f99;
+    --syntax-variable: #001080;
+    --syntax-operator: #000000;
+    --syntax-property: #001080;
+    --syntax-type: #267f99;
+    --syntax-attribute: #795e26;
+    --syntax-tag: #800000;
+
+    /* Difficulty badge colors */
+    --badge-easy: #107c10;
+    --badge-easy-bg: #dff6dd;
+    --badge-medium: #ff8c00;
+    --badge-medium-bg: #fff4ce;
+    --badge-hard: #c2410c;
+    --badge-hard-bg: #ffedd5;
+    --badge-advanced: #d13438;
+    --badge-advanced-bg: #fde7e9;
+    --badge-expert: #8661c5;
+    --badge-expert-bg: #f0ebf8;
+    --badge-architect: #0078d4;
+    --badge-architect-bg: #e6f2fb;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   DARK THEME
+   ═══════════════════════════════════════════════════════════════════ */
+[data-theme="dark"] {
+    --bg-primary: #1e1e1e;
+    --bg-secondary: #252526;
+    --bg-tertiary: #2d2d2d;
+    --bg-elevated: #2d2d2d;
+    --bg-code: #1e1e1e;
+    --bg-code-highlight: #3a3000;
+    --bg-hover: rgba(255, 255, 255, 0.06);
+    --bg-active: rgba(0, 120, 212, 0.15);
+    --bg-sidebar: #252526;
+    --bg-header: #1e1e1e;
+    --bg-card: #2d2d2d;
+    --bg-tooltip: #e1dfdd;
+    --bg-modal-overlay: rgba(0, 0, 0, 0.6);
+
+    --text-primary: #cccccc;
+    --text-secondary: #9d9d9d;
+    --text-tertiary: #6d6d6d;
+    --text-inverse: #1b1b1b;
+    --text-link: #4fc3f7;
+    --text-link-hover: #81d4fa;
+    --text-code: #d4d4d4;
+    --text-heading: #e0e0e0;
+
+    --border-primary: #3e3e3e;
+    --border-secondary: #4e4e4e;
+    --border-focus: #4fc3f7;
+    --border-code: #3e3e3e;
+
+    --scrollbar-track: #2d2d2d;
+    --scrollbar-thumb: #4e4e4e;
+    --scrollbar-thumb-hover: #6d6d6d;
+
+    /* Syntax highlighting — dark */
+    --syntax-keyword: #569cd6;
+    --syntax-string: #ce9178;
+    --syntax-number: #b5cea8;
+    --syntax-comment: #6a9955;
+    --syntax-function: #dcdcaa;
+    --syntax-class: #4ec9b0;
+    --syntax-variable: #9cdcfe;
+    --syntax-operator: #d4d4d4;
+    --syntax-property: #9cdcfe;
+    --syntax-type: #4ec9b0;
+    --syntax-attribute: #dcdcaa;
+    --syntax-tag: #569cd6;
+
+    /* Difficulty badge colors (dark) */
+    --badge-easy: #4caf50;
+    --badge-easy-bg: #1b3a1b;
+    --badge-medium: #ffb74d;
+    --badge-medium-bg: #3a2e00;
+    --badge-hard: #fb923c;
+    --badge-hard-bg: #3a2410;
+    --badge-advanced: #ef5350;
+    --badge-advanced-bg: #3a1b1b;
+    --badge-expert: #ba68c8;
+    --badge-expert-bg: #2a1a3a;
+    --badge-architect: #4fc3f7;
+    --badge-architect-bg: #1a2a3a;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.6);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   PREMIUM POLISH — Enhanced visual quality
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Utility colors (used in homepage cards) ────────────────────── */
+[data-theme="light"] {
+    --green-500: #22c55e;
+    --blue-500: #3b82f6;
+    --purple-500: #8b5cf6;
+    --orange-500: #f97316;
+    --red-500: #ef4444;
+    --teal-500: #14b8a6;
+    --blue-400: #60a5fa;
+    --purple-400: #a78bfa;
+    --green-400: #4ade80;
+    --orange-400: #fb923c;
+    --red-400: #f87171;
+    --teal-400: #2dd4bf;
+}
+
+[data-theme="dark"] {
+    --green-500: #22c55e;
+    --blue-500: #60a5fa;
+    --purple-500: #a78bfa;
+    --orange-500: #fb923c;
+    --red-500: #f87171;
+    --teal-500: #2dd4bf;
+    --blue-400: #93c5fd;
+    --purple-400: #c4b5fd;
+    --green-400: #86efac;
+    --orange-400: #fdba74;
+    --red-400: #fca5a5;
+    --teal-400: #5eead4;
+}

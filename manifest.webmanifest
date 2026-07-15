@@ -1,0 +1,25 @@
+{
+  "name": "Interview Handbook — Senior Engineer",
+  "short_name": "Interview Handbook",
+  "description": "Interview Preparation Handbook for Senior Software Engineers, Technical Leads, and Solution Architects.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#0078d4",
+  "icons": [
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}
