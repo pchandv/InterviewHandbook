@@ -77,6 +77,115 @@ public class Config
     public required int MaxRetries { get; init; }
 }`,
             language: 'csharp'
+        },
+        {
+            title: 'Best Practices',
+            content: `<p>Following these practices ensures your C# code is memory-efficient, safe, and communicates intent clearly to other developers.</p>
+            <ul>
+                <li><strong>Use <code>readonly</code> for immutable fields</strong> — prevents accidental mutation after construction and enables compiler optimizations on structs (avoids defensive copies when the struct is also marked <code>readonly</code>).</li>
+                <li><strong>Prefer value types for small, short-lived data</strong> — structs under 16 bytes that are allocated and discarded quickly benefit from stack allocation and avoid GC pressure.</li>
+                <li><strong>Avoid boxing</strong> — use generic collections (<code>List&lt;T&gt;</code>), implement <code>IEquatable&lt;T&gt;</code> on structs, and use constrained generics to keep value types on the stack.</li>
+                <li><strong>Enable nullable reference types</strong> — add <code>&lt;Nullable&gt;enable&lt;/Nullable&gt;</code> to your project and treat every warning as a potential <code>NullReferenceException</code> in production.</li>
+                <li><strong>Use <code>const</code> for compile-time values</strong> — mathematical constants, protocol versions, and values that will never change across releases.</li>
+                <li><strong>Use <code>static readonly</code> for runtime constants</strong> — values computed at startup, cross-assembly "constants", and reference-type constants that <code>const</code> cannot support.</li>
+            </ul>`,
+            code: `// readonly struct — no defensive copies, clear immutability intent
+public readonly struct Vector3
+{
+    public float X { get; init; }
+    public float Y { get; init; }
+    public float Z { get; init; }
+
+    public float Magnitude => MathF.Sqrt(X * X + Y * Y + Z * Z);
+}
+
+// const vs static readonly
+public const double Pi = 3.14159265358979;           // Compile-time, inlined
+public static readonly TimeSpan Timeout = TimeSpan.FromSeconds(30); // Runtime
+
+// Nullable reference types — compiler catches null bugs
+#nullable enable
+public string GetDisplayName(User? user)
+{
+    // Compiler warns: user might be null
+    return user?.FullName ?? "Anonymous";
+}
+
+// Avoid boxing with generic constraints
+public static bool AreEqual<T>(T a, T b) where T : IEquatable<T>
+    => a.Equals(b); // No boxing — constrained call`,
+            language: 'csharp'
+        },
+        {
+            title: 'Common Mistakes',
+            content: `<p>These are the pitfalls that trip up developers from juniors writing their first struct to seniors who overlook performance in hot paths.</p>
+            <ul>
+                <li><strong>Not understanding boxing/unboxing cost</strong> — each boxing allocates ~16 bytes on x64 (object header + method table pointer + value). In tight loops, this creates massive GC pressure. A million boxing operations in a request path can turn a 5ms call into a 50ms call with frequent Gen 0 collections.</li>
+                <li><strong>Comparing value types with <code>==</code> vs <code>.Equals()</code></strong> — for structs without an overridden <code>==</code> operator, the default uses reflection-based comparison (slow). Always implement <code>IEquatable&lt;T&gt;</code> and override <code>==</code> on custom structs.</li>
+                <li><strong>Ignoring nullable reference type warnings</strong> — treating NRT warnings as noise defeats the purpose. Each warning represents a possible null dereference that will throw at runtime. Configure <code>TreatWarningsAsErrors</code> for nullable warnings in CI.</li>
+                <li><strong>Using <code>var</code> when the type is unclear</strong> — <code>var x = GetResult();</code> forces readers to look up the return type. Use explicit types when the right-hand side doesn't make the type obvious, especially in code reviews and complex method chains.</li>
+            </ul>`,
+            code: `// MISTAKE: Boxing in a hot loop
+for (int i = 0; i < 1_000_000; i++)
+{
+    object boxed = i;  // 1 million heap allocations!
+}
+
+// MISTAKE: Default struct equality uses reflection
+public struct BadPoint { public int X, Y; }
+var a = new BadPoint { X = 1, Y = 2 };
+var b = new BadPoint { X = 1, Y = 2 };
+a.Equals(b); // Works but uses ValueType.Equals (reflection, slow, boxes!)
+
+// FIX: Implement IEquatable<T>
+public readonly struct GoodPoint : IEquatable<GoodPoint>
+{
+    public int X { get; init; }
+    public int Y { get; init; }
+    public bool Equals(GoodPoint other) => X == other.X && Y == other.Y;
+    public override bool Equals(object? obj) => obj is GoodPoint p && Equals(p);
+    public override int GetHashCode() => HashCode.Combine(X, Y);
+    public static bool operator ==(GoodPoint a, GoodPoint b) => a.Equals(b);
+    public static bool operator !=(GoodPoint a, GoodPoint b) => !a.Equals(b);
+}
+
+// MISTAKE: Ignoring NRT warning
+string name = null!; // Suppressed — will throw later
+Console.WriteLine(name.Length); // NullReferenceException at runtime`,
+            language: 'csharp'
+        },
+        {
+            title: 'Interview Tips',
+            callout: { type: 'tip', title: 'What Interviewers Look For', text: 'Know the difference between stack and heap allocation at the memory level — draw the diagram. Understand exactly when boxing occurs (value → object, struct → interface, passing to non-generic API). Explain why strings are immutable (thread safety, interning, security). Articulate the difference between ref and value types not just in syntax but in how they behave in memory: copying semantics, GC tracking, and cache locality implications.' },
+            content: `<p>C# type system questions are foundational in interviews because they reveal how deeply a candidate understands what happens beneath the language surface.</p>
+            <ul>
+                <li><strong>Stack vs Heap</strong> — be precise: value-type locals go on the stack, but value-type fields inside a class live on the heap with their parent object. This nuance separates memorized answers from real understanding.</li>
+                <li><strong>Boxing scenarios</strong> — interviewers love hidden boxing: <code>ArrayList.Add(int)</code>, <code>string.Format("{0}", int)</code> in older code, <code>IComparable c = myStruct</code>. Name three examples unprompted.</li>
+                <li><strong>String immutability</strong> — strings are reference types but behave like values because they're immutable. This enables interning, thread-safe sharing, and safe use as dictionary keys.</li>
+                <li><strong>ref vs value at memory level</strong> — a reference type variable on the stack is 8 bytes (pointer on x64). The object it points to lives on the heap with a 16-byte header. Value types have no header — just raw data.</li>
+            </ul>`
+        },
+        {
+            title: 'Key Takeaways',
+            content: `<p>The essential mental model for C# types:</p>
+            <ul>
+                <li><strong>Value types live on the stack</strong> (when local) — fast allocation, fast deallocation, no GC involvement. Ideal for small, short-lived data.</li>
+                <li><strong>Reference types live on the heap</strong> — managed by the garbage collector. Each object has a 16-byte header (sync block + method table pointer on x64). GC pauses scale with live object count.</li>
+                <li><strong>Boxing converts value → reference</strong> — allocates a new heap object wrapping the value. Every box is a GC allocation. Avoid in hot paths by using generics and <code>IEquatable&lt;T&gt;</code>.</li>
+                <li><strong><code>Nullable&lt;T&gt;</code> wraps value types</strong> — adds a <code>HasValue</code> boolean flag. It's still a value type (no heap allocation), just slightly larger than <code>T</code>.</li>
+                <li><strong><code>const</code> is compile-time substitution</strong> — the value is literally inlined into the IL at every usage site. Changing a const requires recompilation of all consumers. Use <code>static readonly</code> for values that may evolve.</li>
+            </ul>`,
+            table: {
+                headers: ['Concept', 'Storage', 'Cost', 'GC Impact'],
+                rows: [
+                    ['Value type (local)', 'Stack', 'Zero allocation', 'None'],
+                    ['Reference type', 'Heap', '16-byte header + data', 'Tracked by GC'],
+                    ['Boxing', 'Heap (new object)', '~16 bytes overhead', 'Creates GC pressure'],
+                    ['Nullable<T>', 'Stack (inline)', '+1 byte (HasValue flag)', 'None'],
+                    ['const', 'Inlined in IL', 'Zero at runtime', 'None'],
+                    ['static readonly', 'Heap (static field)', 'One-time allocation', 'Minimal (single instance)']
+                ]
+            }
         }
     ],
     questions: [

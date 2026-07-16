@@ -96,6 +96,69 @@ app.Use(async (context, next) =>
     await next();
 });`,
             language: 'csharp'
+        },
+        {
+            title: 'Visual Diagram',
+            content: `<p>The ASP.NET Core middleware pipeline follows a <strong>bidirectional flow</strong>. The request passes through each middleware in order, reaches the endpoint, and the response flows back through the same middleware in reverse order.</p>`,
+            mermaid: `flowchart LR
+    subgraph Request Flow
+        direction LR
+        R[Request] --> M1[Middleware 1]
+        M1 --> M2[Middleware 2]
+        M2 --> M3[Middleware 3]
+        M3 --> EP[Endpoint]
+    end
+    subgraph Response Flow
+        direction RL
+        EP2[Endpoint] --> M3R[Middleware 3]
+        M3R --> M2R[Middleware 2]
+        M2R --> M1R[Middleware 1]
+        M1R --> RS[Response]
+    end`
+        },
+        {
+            title: 'Best Practices',
+            content: `<ul>
+                <li><strong>Middleware order matters</strong> — always register authentication before authorization; exception handling should be first in the pipeline</li>
+                <li><strong>Use UseWhen for conditional middleware</strong> — apply middleware only to specific paths or conditions without branching the entire pipeline</li>
+                <li><strong>Keep middleware focused (SRP)</strong> — each middleware should do one thing well; split complex logic into separate middleware components</li>
+                <li><strong>Avoid blocking calls in middleware</strong> — use async/await throughout; synchronous I/O blocks thread pool threads and kills scalability</li>
+                <li><strong>Use IMiddleware for DI-friendly middleware</strong> — when your middleware needs scoped services, implement IMiddleware for proper per-request lifetime management</li>
+                <li><strong>Check if the response has started before modifying headers</strong> — use <code>context.Response.HasStarted</code> to guard against <code>InvalidOperationException</code> when setting headers or status codes after the response body has begun streaming</li>
+            </ul>`
+        },
+        {
+            title: 'Common Mistakes',
+            content: `<ul>
+                <li><strong>Wrong middleware order</strong> — placing <code>UseAuthorization()</code> before <code>UseAuthentication()</code> means authorization checks run without an established identity, making [Authorize] ineffective</li>
+                <li><strong>Modifying response after it has started</strong> — attempting to set headers or status code after response bytes have been sent throws <code>InvalidOperationException</code></li>
+                <li><strong>Blocking synchronous calls in middleware</strong> — using <code>.Result</code> or <code>.Wait()</code> on async operations starves the thread pool and causes deadlocks under load</li>
+                <li><strong>Catching all exceptions silently</strong> — middleware that swallows exceptions without logging or re-throwing hides bugs and makes incidents undiagnosable</li>
+                <li><strong>Not calling next() in custom middleware</strong> — forgetting to invoke the next delegate silently short-circuits the pipeline, and no downstream middleware or endpoint ever executes</li>
+            </ul>`
+        },
+        {
+            title: 'Interview Tips',
+            callout: {
+                type: 'tip',
+                title: 'What Interviewers Look For',
+                text: `<ul>
+                    <li>Can you draw the middleware pipeline from memory — showing the bidirectional request/response flow?</li>
+                    <li>Do you know that middleware order matters and can explain <em>why</em> with concrete examples (e.g., auth before authz)?</li>
+                    <li>Can you write custom middleware on a whiteboard — including constructor, InvokeAsync, and calling next()?</li>
+                    <li>Do you understand the request/response pipeline direction — that request flows forward through middleware and the response flows back in reverse order?</li>
+                </ul>`
+            }
+        },
+        {
+            title: 'Key Takeaways',
+            content: `<ul>
+                <li><strong>Middleware is ordered</strong> — each component runs in the exact sequence it was registered, and order determines behavior correctness</li>
+                <li><strong>Each middleware can short-circuit</strong> — by not calling <code>next()</code>, a middleware terminates the pipeline early (useful for auth failures, rate limiting, caching)</li>
+                <li><strong>UseEndpoints/MapControllers terminates the pipeline</strong> — the endpoint is the final destination; it does not call further middleware</li>
+                <li><strong>Custom middleware is just a class with InvokeAsync</strong> — accept a <code>RequestDelegate</code> in the constructor, implement <code>InvokeAsync(HttpContext)</code>, and call <code>next(context)</code> to continue</li>
+                <li><strong>The pipeline is bidirectional</strong> — the request passes in through each middleware layer, and the response passes back out through the same layers in reverse (the onion model)</li>
+            </ul>`
         }
     ],
     questions: [

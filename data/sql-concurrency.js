@@ -182,6 +182,83 @@ catch (DbUpdateConcurrencyException)
     // Merge or overwrite...
 }`,
             language: 'sql'
+        },
+        {
+            title: 'Best Practices',
+            content: `<p>Concurrency design choices that balance correctness with throughput:</p>
+            <ul>
+                <li><strong>Use READ COMMITTED SNAPSHOT (RCSI) for most OLTP</strong> — readers never block writers, writers never block readers. Azure SQL enables this by default. It eliminates 90% of blocking issues with minimal overhead.</li>
+                <li><strong>Understand when SERIALIZABLE is needed</strong> — only for check-then-act operations (read balance → deduct if sufficient). Do not use it broadly; scope it to specific critical transactions.</li>
+                <li><strong>Keep transactions short</strong> — acquire locks late, commit early. Never hold a transaction open across user think-time, external API calls, or network waits.</li>
+                <li><strong>Avoid holding locks during external calls</strong> — if your transaction calls an HTTP API or waits for a message queue, you're holding locks for unpredictable durations. Restructure to commit before the external call or use the Outbox pattern.</li>
+                <li><strong>Use NOLOCK only for reporting</strong> — explicitly accept dirty reads for approximate reporting queries on large tables. Never use it for transactional operations where correctness matters.</li>
+            </ul>`,
+            code: `-- Enable RCSI (do this for every new database):
+ALTER DATABASE MyApp SET READ_COMMITTED_SNAPSHOT ON;
+-- All READ COMMITTED queries now use row versioning (no shared locks!)
+-- Readers see last committed version; no blocking, no dirty reads.
+
+-- SERIALIZABLE only where needed (scoped, short):
+BEGIN TRANSACTION;
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+    SELECT @Balance = Balance FROM Accounts WHERE Id = @Id;
+    IF @Balance >= @Amount
+        UPDATE Accounts SET Balance = Balance - @Amount WHERE Id = @Id;
+COMMIT;
+-- Range lock prevents phantom inserts during the check-then-act.
+
+-- Keep transactions short — WRONG:
+BEGIN TRANSACTION;
+    UPDATE Orders SET Status = 'Processing' WHERE Id = @Id;
+    -- Call external payment API (network wait = locks held for seconds!)
+    EXEC sp_OAMethod @httpObj, 'Send', ...  
+COMMIT; -- locks held entire time!
+
+-- RIGHT: commit first, then external call (or use Outbox pattern)
+UPDATE Orders SET Status = 'PendingPayment' WHERE Id = @Id;
+-- Transaction committed, locks released
+-- Then call payment API separately; handle failure with compensation`,
+            language: 'sql'
+        },
+        {
+            title: 'Common Mistakes',
+            content: `<p>These concurrency anti-patterns cause blocking, deadlocks, and data corruption:</p>
+            <ul>
+                <li><strong>Default to SERIALIZABLE "for safety"</strong> — it causes severe blocking and deadlocks under load. Use the lowest isolation level that protects your specific invariants.</li>
+                <li><strong>Long-running transactions holding locks</strong> — a transaction open for seconds (or minutes!) blocks other sessions from accessing the same rows. Keep transactions under 100ms whenever possible.</li>
+                <li><strong>Deadlocks from inconsistent lock ordering</strong> — if Session A updates Orders then Products, and Session B updates Products then Orders, deadlock. Always access tables in a consistent order across all code paths.</li>
+                <li><strong>Using NOLOCK on transactional queries</strong> — dirty reads can return uncommitted data, partially-written rows, or even rows that will be rolled back. Only use for approximate reporting where accuracy is not critical.</li>
+                <li><strong>Not understanding snapshot isolation overhead</strong> — RCSI uses tempdb for the version store. Under heavy write loads, tempdb can grow significantly and become a bottleneck if not properly sized with multiple data files.</li>
+            </ul>`,
+            code: `-- MISTAKE: SERIALIZABLE everywhere (kills concurrency)
+-- This causes range locks on every read, blocking all concurrent writers:
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+SELECT * FROM Orders WHERE CustomerId = @Id; -- range lock!
+-- Other sessions cannot INSERT orders for this customer until you commit.
+
+-- MISTAKE: NOLOCK for transactional correctness
+-- This can return a balance that was never committed:
+SELECT @Balance = Balance FROM Accounts WITH (NOLOCK) WHERE Id = @Id;
+-- If another transaction is mid-update, you might read a phantom value!
+
+-- MISTAKE: Inconsistent lock ordering → deadlock
+-- Proc A: UPDATE Accounts... then UPDATE Ledger...
+-- Proc B: UPDATE Ledger... then UPDATE Accounts...
+-- Fix: Both must: UPDATE Accounts first, then Ledger (consistent order)
+
+-- MISTAKE: Long transaction with user think-time
+BEGIN TRANSACTION;
+    SELECT * FROM Products WHERE Id = @Id; -- shared lock held
+    -- User stares at edit form for 5 minutes...
+    UPDATE Products SET Price = @NewPrice WHERE Id = @Id;
+COMMIT; -- Locks held 5 minutes! Everyone else blocked!
+-- Fix: Use optimistic concurrency (rowversion check at save time)`,
+            language: 'sql'
+        },
+        {
+            title: 'Interview Tips',
+            content: '<p>Concurrency questions reveal whether you understand the real-world trade-offs, not just textbook definitions.</p>',
+            callout: { type: 'tip', title: 'What Interviewers Look For', text: 'Know all isolation levels and their trade-offs — map each level to the anomaly it prevents (dirty read → non-repeatable → phantom) and the blocking it introduces. Explain deadlock prevention strategies: consistent lock ordering, short transactions, and RCSI. Understand optimistic vs pessimistic concurrency at the database level — pessimistic locks upfront (UPDLOCK), optimistic detects at write time (rowversion/timestamp). The senior signal is recommending RCSI as the default and explaining WHY (readers + writers never block each other via row versioning in tempdb).' }
         }
     ],
     questions: [

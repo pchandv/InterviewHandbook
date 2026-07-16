@@ -115,6 +115,67 @@ builder.Services.AddCors(options =>
 app.UseHttpsRedirection();
 app.UseHsts(); // Strict-Transport-Security header`,
             language: 'csharp'
+        },
+        {
+            title: 'Visual Diagram',
+            content: `<p>Performance and security middleware form a pipeline where each stage processes the request before passing it to the next. Understanding the order is critical — rate limiting rejects abusive requests early, compression reduces response size, and output caching avoids re-execution entirely.</p>`,
+            mermaid: `graph LR
+    A["Incoming Request"] --> B["Rate Limiter<br/>(reject excess)"]
+    B --> C["Response Compression<br/>(Brotli/Gzip)"]
+    C --> D["Output Cache<br/>(serve cached)"]
+    D --> E["CORS / Security Headers"]
+    E --> F["Endpoint<br/>(controller/handler)"]
+    F --> G["Response"]
+    
+    D -.->|"Cache HIT"| G
+    B -.->|"429 Too Many Requests"| G
+
+    style A fill:#3498db,color:#fff
+    style B fill:#e74c3c,color:#fff
+    style C fill:#e67e22,color:#fff
+    style D fill:#27ae60,color:#fff
+    style E fill:#8e44ad,color:#fff
+    style F fill:#2c3e50,color:#fff
+    style G fill:#16a085,color:#fff`
+        },
+        {
+            title: 'Best Practices',
+            content: `<ul>
+                <li><strong>Use Output Caching for GET endpoints</strong> — for read-heavy APIs, output caching avoids re-executing the entire pipeline. Tag cached entries by resource so invalidation is surgical. Much cheaper than re-querying the database on every request.</li>
+                <li><strong>Enable Response Compression (Brotli preferred)</strong> — Brotli offers 15-25% better compression than Gzip for text/JSON. Use <code>CompressionLevel.Fastest</code> for high-throughput APIs where CPU is scarcer than bandwidth.</li>
+                <li><strong>Rate limit per user, not just globally</strong> — global rate limits let one abusive client block everyone. Partition by authenticated user ID or IP so fair-use enforcement is granular. Use token bucket for burst-tolerant APIs.</li>
+                <li><strong>HTTPS everywhere</strong> — enforce <code>UseHttpsRedirection()</code> + <code>UseHsts()</code> with <code>includeSubDomains</code>. Configure <code>ForwardedHeaders</code> behind load balancers to prevent redirect loops.</li>
+                <li><strong>Use CORS restrictively</strong> — always use explicit <code>WithOrigins()</code> allow-lists from configuration. Never combine <code>AllowAnyOrigin()</code> with <code>AllowCredentials()</code> (the spec forbids it). Scope methods and headers to what the SPA actually needs.</li>
+            </ul>`
+        },
+        {
+            title: 'Common Mistakes',
+            content: `<ul>
+                <li><strong>Compressing already-compressed content</strong> — images (JPEG, PNG), videos, and ZIP files are already compressed. Attempting to re-compress them wastes CPU for zero gain. Restrict MIME types to text-based formats (JSON, XML, HTML).</li>
+                <li><strong>Rate limiting without Retry-After header</strong> — well-behaved clients need to know when they can retry. Always include a <code>Retry-After</code> header (in seconds) in your 429 response so clients back off correctly instead of hammering blindly.</li>
+                <li><strong>CORS wildcard (*) in production</strong> — <code>AllowAnyOrigin()</code> in production means any website can read your API responses. Combined with credentials, it is an outright spec violation. Use explicit origin allow-lists sourced from environment config.</li>
+                <li><strong>No HTTPS redirect</strong> — without <code>UseHttpsRedirection()</code> and HSTS, the first request over HTTP is vulnerable to MITM attacks. Behind a TLS-terminating proxy, configure <code>ForwardedHeaders</code> so the app knows the original scheme.</li>
+                <li><strong>Compressing at both proxy and app level</strong> — if your CDN/NGINX already compresses responses, enabling compression in the app too wastes CPU with no additional benefit. Pick one layer.</li>
+            </ul>`
+        },
+        {
+            title: 'Interview Tips',
+            content: `<p>Performance and security middleware questions test whether you understand how the ASP.NET Core pipeline works and can reason about trade-offs.</p>`,
+            callout: {
+                type: 'tip',
+                title: 'What Interviewers Look For',
+                text: '<p><strong>Output Caching vs Response Caching</strong> — know the difference. Output caching is server-side (the server stores the response and skips re-execution). Response caching relies on HTTP cache headers and intermediate proxies/browsers. Output caching (.NET 7+) gives you control; response caching depends on client compliance.</p><p><strong>When to use Rate Limiting</strong> — protect authentication endpoints aggressively (5 attempts/min for brute-force prevention), use per-user partitioning for fair usage, and always return 429 with Retry-After. In distributed deployments, per-instance limits are insufficient — mention Redis-backed or gateway-level rate limiting.</p><p><strong>Pipeline order matters</strong> — rate limiting should reject early (save resources), compression wraps the response body (place before endpoints write), and CORS must be after routing but before auth.</p>'
+            }
+        },
+        {
+            title: 'Key Takeaways',
+            content: `<ul>
+                <li><strong>Performance and security middleware work together</strong> — rate limiting, compression, caching, CORS, and HTTPS enforcement are not isolated concerns. Their pipeline order determines effectiveness.</li>
+                <li><strong>Rate limiting protects backends</strong> — it is the first line of defense against abuse, accidental DDoS from misbehaving clients, and brute-force attacks on auth endpoints. Partition per-user for fairness.</li>
+                <li><strong>Compression reduces bandwidth, not latency</strong> — Brotli/Gzip shrink payloads 60-80% for text content. Prefer doing it at the edge (CDN/proxy) to save app CPU. Never re-compress already-compressed formats.</li>
+                <li><strong>Output caching avoids re-execution</strong> — for GET endpoints with stable data, output caching is cheaper than response caching because the server controls it entirely without depending on client cache headers.</li>
+                <li><strong>Security headers are defense-in-depth</strong> — HSTS, CSP, X-Content-Type-Options, and restrictive CORS together create multiple layers. No single header is sufficient alone.</li>
+            </ul>`
         }
     ],
     questions: [

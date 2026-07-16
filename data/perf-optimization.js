@@ -55,6 +55,90 @@ public class SerializationBenchmark
 // 6. Use output caching for expensive computations
 // 7. Batch operations (bulk insert instead of N individual inserts)`,
             language: 'csharp'
+        },
+        {
+            title: 'Visual Diagram',
+            content: '<p>The performance optimization workflow is a disciplined loop: never skip profiling and never declare victory without re-measuring.</p>',
+            mermaid: `graph LR
+    A[Profile] --> B[Identify Hotspot]
+    B --> C[Benchmark]
+    C --> D[Optimize]
+    D --> E[Verify Improvement]
+    E --> F[Monitor in Production]
+    F -->|Regression?| A
+    style A fill:#e3f2fd
+    style D fill:#e8f5e9
+    style F fill:#fff3e0`
+        },
+        {
+            title: 'Best Practices',
+            content: `<p>Performance work must be evidence-driven. Follow these principles to avoid wasted effort and regressions:</p>
+            <ul>
+                <li><strong>Always profile before optimizing</strong> — intuition about bottlenecks is wrong 80% of the time. Measure with dotnet-trace, Application Insights, or PerfView first.</li>
+                <li><strong>Use BenchmarkDotNet for micro-benchmarks</strong> — it handles warmup, JIT tiering, multiple iterations, and allocation tracking. Never rely on a raw Stopwatch loop.</li>
+                <li><strong>Prefer async/await for I/O scalability</strong> — async does not make a single call faster; it frees threads so the server handles more concurrent requests.</li>
+                <li><strong>Use ObjectPool&lt;T&gt; for expensive allocations</strong> — reuse objects (StringBuilder, buffers, database connections) instead of creating/collecting on every request.</li>
+                <li><strong>Right-size collections (initial capacity)</strong> — <code>new List&lt;T&gt;(expectedCount)</code> and <code>new Dictionary&lt;K,V&gt;(capacity)</code> avoid repeated array resizing and rehashing in hot paths.</li>
+            </ul>`,
+            code: `// ObjectPool for reusable expensive objects
+var pool = new DefaultObjectPool<StringBuilder>(
+    new StringBuilderPooledObjectPolicy { MaximumRetainedCapacity = 4096 });
+
+var sb = pool.Get();
+try {
+    sb.Append("build response...");
+    return sb.ToString();
+} finally {
+    pool.Return(sb); // returned to pool, not GC'd
+}
+
+// Right-size collections
+var results = new List<OrderDto>(expectedCount); // no resize allocations
+var lookup = new Dictionary<int, Customer>(customerCount);`,
+            language: 'csharp'
+        },
+        {
+            title: 'Common Mistakes',
+            content: `<p>These anti-patterns waste engineering time or actively make things worse:</p>
+            <ul>
+                <li><strong>Premature optimization</strong> — spending days shaving nanoseconds off a method that contributes 0.1% of total request time. Always let profiling data guide where to invest effort.</li>
+                <li><strong>Optimizing code that runs once a day</strong> — a nightly batch job taking 3s vs 2s is irrelevant compared to a per-request hot path saving 5ms × 10,000 RPS.</li>
+                <li><strong>Micro-benchmarking incorrectly</strong> — not warming up JIT, running in Debug mode, or not consuming results (optimizer eliminates dead code). Use BenchmarkDotNet to avoid all of these.</li>
+                <li><strong>Using Parallel.For for I/O work</strong> — Parallel.For is for CPU-bound work. For I/O, use async + Task.WhenAll to overlap without burning thread-pool threads.</li>
+                <li><strong>Adding complexity for unmeasured gains</strong> — introducing caching, object pools, or custom allocators without proving the simpler version is actually slow. Complexity has a maintenance cost.</li>
+            </ul>`,
+            code: `// WRONG: Parallel.For for I/O (blocks thread-pool threads)
+Parallel.ForEach(userIds, id => {
+    var user = httpClient.GetFromJsonAsync<User>($"/users/{id}").Result; // blocks!
+});
+
+// RIGHT: async + Task.WhenAll (no threads blocked)
+var tasks = userIds.Select(id => httpClient.GetFromJsonAsync<User>($"/users/{id}"));
+var users = await Task.WhenAll(tasks); // concurrent I/O, zero blocked threads
+
+// WRONG: Optimizing without measuring
+// "I'll use Span<T> everywhere for performance!" — but the method runs once per request
+// and takes 0.01ms while the DB call takes 50ms. Net gain: zero.
+
+// RIGHT: Profile first, then target the actual bottleneck
+// dotnet-trace shows: 92% time in SqlCommand.ExecuteReader
+// Fix: add a covering index → query drops from 50ms to 2ms → real user impact`,
+            language: 'csharp'
+        },
+        {
+            title: 'Interview Tips',
+            content: '<p>Performance questions test whether you think systematically or guess-and-check.</p>',
+            callout: { type: 'tip', title: 'What Interviewers Look For', text: 'Know WHEN async helps — it improves scalability (concurrent requests per thread), not the speed of a single call. Be ready to explain BenchmarkDotNet usage and why Stopwatch is unreliable. Articulate the difference between horizontal scaling (add instances, requires statelessness) and vertical scaling (bigger machine, simpler but capped). Mention caching as the single biggest performance lever in most systems, and always lead with "I would measure first" before proposing any optimization.' }
+        },
+        {
+            title: 'Key Takeaways',
+            content: `<ul>
+                <li><strong>Measure first, optimize second</strong> — profiling identifies the real bottleneck; intuition is unreliable.</li>
+                <li><strong>Async improves scalability, not latency</strong> — a single request isn't faster with async; the server handles more concurrent requests because threads aren't blocked.</li>
+                <li><strong>Horizontal scaling requires stateless services</strong> — externalize state to Redis/DB so any instance can handle any request; then autoscaling works.</li>
+                <li><strong>Caching is the biggest single performance lever</strong> — eliminating redundant work (DB queries, API calls, computations) with appropriate caching yields 10-100x improvements.</li>
+                <li><strong>P99 matters more than average</strong> — the slowest 1% of requests define real user experience under load.</li>
+            </ul>`
         }
     ],
     questions: [

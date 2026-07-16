@@ -196,6 +196,77 @@ OPTION (RECOMPILE)  -- Forces fresh plan each time (CPU cost)
 OPTION (OPTIMIZE FOR (@param = 'typical_value'))  -- Hint for optimizer
 OPTION (OPTIMIZE FOR UNKNOWN)  -- Use average statistics`,
             language: 'sql'
+        },
+        {
+            title: 'Best Practices',
+            content: `<p>Index and query design principles that consistently deliver performance improvements:</p>
+            <ul>
+                <li><strong>Design indexes for your queries, not your tables</strong> — analyze the top slowest queries (Query Store, DMVs) and create indexes that serve those specific access patterns.</li>
+                <li><strong>Use covering indexes to avoid key lookups</strong> — add INCLUDE columns so the query is answered entirely from the index without a trip to the base table.</li>
+                <li><strong>Update statistics regularly</strong> — stale statistics cause the optimizer to choose bad plans. Enable auto-update and supplement with scheduled FULLSCAN updates for volatile tables.</li>
+                <li><strong>Avoid SELECT *</strong> — it prevents covering-index usage, transfers unnecessary data, and couples code to schema changes.</li>
+                <li><strong>Use SET STATISTICS IO ON for diagnostics</strong> — logical reads is the single most useful number for comparing query performance. Lower logical reads = less work = faster query.</li>
+            </ul>`,
+            code: `-- Design indexes for your queries: check what's slow first
+-- Find top 10 most expensive queries by logical reads:
+SELECT TOP 10
+    qs.total_logical_reads / qs.execution_count AS avg_reads,
+    qs.execution_count,
+    SUBSTRING(st.text, (qs.statement_start_offset/2)+1, 100) AS query_text
+FROM sys.dm_exec_query_stats qs
+CROSS APPLY sys.dm_exec_sql_text(qs.sql_handle) st
+ORDER BY avg_reads DESC;
+
+-- Then create targeted covering indexes for those specific queries:
+CREATE NONCLUSTERED INDEX IX_Orders_CustomerDate_Cover
+ON Orders(CustomerId, OrderDate)
+INCLUDE (Status, TotalAmount);  -- covers the SELECT list
+
+-- Update statistics on volatile tables:
+UPDATE STATISTICS Orders WITH FULLSCAN;  -- accurate histogram
+
+-- Always check logical reads when tuning:
+SET STATISTICS IO ON;
+SELECT CustomerId, TotalAmount FROM Orders WHERE CustomerId = 42;
+-- Look for: Table 'Orders'. Scan count 1, logical reads 3
+-- Before index: logical reads 50000 (full scan)
+-- After index:  logical reads 3 (index seek)`,
+            language: 'sql'
+        },
+        {
+            title: 'Common Mistakes',
+            content: `<p>These indexing and query anti-patterns cause silent performance degradation:</p>
+            <ul>
+                <li><strong>Indexing every column</strong> — each index has a write cost (INSERT/UPDATE/DELETE must maintain it). Over-indexing slows writes without proportional read benefit. Target the actual query patterns.</li>
+                <li><strong>Not checking execution plans</strong> — the plan reveals scans, key lookups, and bad join choices. Without looking at the plan, you're guessing at the problem.</li>
+                <li><strong>Ignoring fragmentation</strong> — heavily fragmented indexes cause extra I/O for range scans. Monitor with sys.dm_db_index_physical_stats and reorganize/rebuild on schedule.</li>
+                <li><strong>Functions on indexed columns in WHERE</strong> — WHERE YEAR(OrderDate) = 2024 makes the index on OrderDate useless. The optimizer cannot seek when the column is wrapped in a function.</li>
+                <li><strong>Parameter sniffing unawareness</strong> — the first execution's parameter value determines the cached plan. If that value is atypical, every subsequent execution uses a bad plan. Use Query Store or OPTIMIZE FOR hints.</li>
+            </ul>`,
+            code: `-- MISTAKE: Function on indexed column (kills index usage)
+-- BAD: forces index scan even with perfect index on OrderDate
+WHERE YEAR(OrderDate) = 2024
+-- GOOD: SARGable range that uses index seek
+WHERE OrderDate >= '2024-01-01' AND OrderDate < '2025-01-01'
+
+-- MISTAKE: Not monitoring fragmentation
+-- Check fragmentation levels:
+SELECT OBJECT_NAME(object_id) AS TableName, avg_fragmentation_in_percent
+FROM sys.dm_db_index_physical_stats(DB_ID(), NULL, NULL, NULL, 'LIMITED')
+WHERE avg_fragmentation_in_percent > 10;
+
+-- MISTAKE: Parameter sniffing — first call with atypical value poisons the cache
+-- Detect with Query Store: same query, wildly different execution times
+-- Fix options:
+OPTION (RECOMPILE)                           -- fresh plan each time
+OPTION (OPTIMIZE FOR (@status = 'Active'))   -- plan for typical value
+OPTION (OPTIMIZE FOR UNKNOWN)                -- use average statistics`,
+            language: 'sql'
+        },
+        {
+            title: 'Interview Tips',
+            content: '<p>SQL performance questions test whether you think systematically or throw indexes at problems randomly.</p>',
+            callout: { type: 'tip', title: 'What Interviewers Look For', text: 'Always mention execution plans first — "I would look at the execution plan" is the correct opening to any query performance question. Know the clustered vs non-clustered difference cold: clustered leaf IS the data (one per table), non-clustered leaf has pointers (many per table). Understand covering indexes and explain why they eliminate key lookups. Mention statistics and their role — the optimizer uses histograms to estimate row counts, and stale statistics cause bad plan choices. Show you think in terms of logical reads, not wall-clock time.' }
         }
     ],
     questions: [

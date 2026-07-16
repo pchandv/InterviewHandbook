@@ -75,6 +75,62 @@ public static partial class Log
 // Serilog.Enrichers.Span adds TraceId/SpanId automatically
 // All logs for one request share the same TraceId — search by trace!`,
             language: 'csharp'
+        },
+        {
+            title: 'Visual Diagram',
+            content: `<p>Configuration sources are layered with a clear priority order. Later sources override earlier ones, giving you a flexible hierarchy from base defaults to runtime overrides.</p>`,
+            mermaid: `graph TD
+    A["Command-Line Arguments<br/>(Highest Priority)"] --> B["Environment Variables"]
+    B --> C["User Secrets<br/>(Development only)"]
+    C --> D["appsettings.{Environment}.json"]
+    D --> E["appsettings.json<br/>(Lowest Priority)"]
+    F["Azure Key Vault /<br/>App Configuration"] --> B
+    
+    style A fill:#e74c3c,color:#fff
+    style B fill:#e67e22,color:#fff
+    style C fill:#f39c12,color:#fff
+    style D fill:#27ae60,color:#fff
+    style E fill:#2980b9,color:#fff
+    style F fill:#8e44ad,color:#fff`
+        },
+        {
+            title: 'Best Practices',
+            content: `<ul>
+                <li><strong>Use the IOptions pattern</strong> — bind configuration sections to strongly-typed classes rather than reading raw strings from IConfiguration. This gives you IntelliSense, compile-time safety, and testability.</li>
+                <li><strong>Validate with DataAnnotations</strong> — decorate options classes with <code>[Required]</code>, <code>[Range]</code>, <code>[Url]</code> etc., and call <code>ValidateDataAnnotations().ValidateOnStart()</code> so misconfigurations fail at startup, not at 2am on the first customer request.</li>
+                <li><strong>Use IOptionsMonitor for live reload</strong> — in singletons and background services that must react to configuration changes at runtime, inject <code>IOptionsMonitor&lt;T&gt;</code> and use <code>CurrentValue</code> / <code>OnChange</code>.</li>
+                <li><strong>Never hard-code connection strings</strong> — connection strings, API keys, and credentials belong in environment variables, User Secrets (dev), or a managed secrets store (Key Vault). The app code should be environment-agnostic.</li>
+                <li><strong>Prefer named options for multi-tenant config</strong> — when you have multiple instances of the same config shape (e.g., multiple database connections), use named options to avoid duplication.</li>
+            </ul>`
+        },
+        {
+            title: 'Common Mistakes',
+            content: `<ul>
+                <li><strong>Reading IConfiguration directly in services</strong> — injecting <code>IConfiguration</code> into business services couples them to the configuration system and makes unit testing painful. Use <code>IOptions&lt;T&gt;</code> instead so you can mock a simple POCO in tests.</li>
+                <li><strong>No validation on startup</strong> — without <code>ValidateOnStart()</code>, a missing or malformed setting only explodes when the code path executes. This can mean production errors hours after deployment.</li>
+                <li><strong>Secrets in appsettings.json committed to git</strong> — connection strings, API keys, and passwords in source control are a security incident waiting to happen. Use User Secrets locally and Key Vault / environment variables in production.</li>
+                <li><strong>Not using IOptionsMonitor for reload</strong> — if configuration can change at runtime (feature flags, connection strings rotated via Key Vault), using plain <code>IOptions&lt;T&gt;</code> means the app never sees the update until restart.</li>
+                <li><strong>Capturing options.Value in a constructor</strong> — storing <code>options.Value</code> as a field in a singleton defeats the purpose of IOptionsMonitor/Snapshot. Always read <code>.CurrentValue</code> at the point of use.</li>
+            </ul>`
+        },
+        {
+            title: 'Interview Tips',
+            content: `<p>Configuration is a common senior-level interview topic that tests both architectural thinking and practical production experience.</p>`,
+            callout: {
+                type: 'tip',
+                title: 'What Interviewers Look For',
+                text: '<p><strong>IOptions vs IOptionsSnapshot vs IOptionsMonitor</strong> — know the lifetime of each (singleton-fixed, scoped-per-request, singleton-live) and the captive dependency trap when mixing them. This is the #1 configuration question at senior level.</p><p><strong>Structured logging with Serilog</strong> — use message templates with named placeholders (<code>Log("{OrderId}", id)</code>) not string interpolation. Mention enrichment with TraceId/SpanId for cross-service correlation. Name the LoggerMessage source generator for zero-allocation hot-path logging.</p><p><strong>Validate on startup</strong> — always mention <code>ValidateOnStart()</code> as the safety net that converts runtime surprises into deploy-time failures.</p>'
+            }
+        },
+        {
+            title: 'Key Takeaways',
+            content: `<ul>
+                <li><strong>Configuration is layered</strong> — multiple sources merge with later sources overriding earlier ones. CLI args and environment variables always win over JSON files.</li>
+                <li><strong>IOptions&lt;T&gt; for typed config</strong> — never read raw strings from IConfiguration in business code. Strongly-typed options are testable, validatable, and self-documenting.</li>
+                <li><strong>Validate on startup</strong> — <code>ValidateDataAnnotations().ValidateOnStart()</code> catches misconfigurations before they reach production traffic.</li>
+                <li><strong>Never store secrets in code or source control</strong> — use User Secrets for dev, environment variables for CI, and managed identity + Key Vault for production.</li>
+                <li><strong>Match the interface to the lifetime</strong> — IOptions for static config, IOptionsSnapshot for per-request, IOptionsMonitor for singletons that need live reload.</li>
+            </ul>`
         }
     ],
     questions: [

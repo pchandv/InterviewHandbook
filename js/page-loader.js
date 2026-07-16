@@ -24,9 +24,13 @@ const PageLoader = (() => {
         } else if (pageId === 'study-plan') {
             renderStudyPlan(container);
         } else if (pageId === 'roadmap') {
-            renderRoadmap(container);
+            RoadmapEngine.renderRoadmapView(container);
+        } else if (pageId === 'tracks') {
+            RoadmapEngine.renderTracksView(container);
+        } else if (pageId === 'career') {
+            RoadmapEngine.renderCareerView(container);
         } else if (pageId === 'dashboard') {
-            renderDashboard(container);
+            DashboardEngine.render(container);
         } else {
             await renderTopicPage(container, pageId);
         }
@@ -110,6 +114,14 @@ const PageLoader = (() => {
                     <a class="card action-card" href="#roadmap">
                         <div class="card-title">${Icons.trendingUp} Learning Roadmap</div>
                         <div class="card-description">Visual path from fundamentals to mastery</div>
+                    </a>
+                    <a class="card action-card" href="#tracks">
+                        <div class="card-title">${Icons.target} Learning Tracks</div>
+                        <div class="card-description">Choose a focused path for your career goal</div>
+                    </a>
+                    <a class="card action-card" href="#career">
+                        <div class="card-title">${Icons.award} Career Roadmap</div>
+                        <div class="card-description">Map your progression from Junior to Principal</div>
                     </a>
                     <a class="card action-card" href="#dashboard">
                         <div class="card-title">${Icons.grid} Dashboard</div>

@@ -60,6 +60,163 @@ public class CacheWarmupService : IHostedService
     }
 }`,
             language: 'csharp'
+        },
+        {
+            title: 'Visual Diagram',
+            mermaid: `graph TD
+    A["Client Request"] --> B{"Check Cache"}
+    B -->|HIT| C["Return Cached Data"]
+    B -->|MISS| D["Query Database"]
+    D --> E["Store in Cache<br/>(with TTL)"]
+    E --> F["Return Fresh Data"]
+    
+    style B fill:#f9f,stroke:#333
+    style C fill:#9f9,stroke:#333
+    style D fill:#ff9,stroke:#333`,
+            content: `<p>The <strong>cache-aside</strong> (lazy-loading) pattern is the most common caching strategy. The application is responsible for reading from and writing to the cache, with the database as the source of truth.</p>
+            <p><strong>Flow:</strong></p>
+            <ol>
+                <li>Application receives a request for data</li>
+                <li>Check the cache for the requested key</li>
+                <li>On <strong>HIT</strong>: return the cached value immediately (sub-millisecond)</li>
+                <li>On <strong>MISS</strong>: query the database (5-50ms)</li>
+                <li>Store the result in cache with an appropriate TTL</li>
+                <li>Return the data to the caller</li>
+            </ol>
+            <p>On <strong>write</strong>, the application updates the database and <em>invalidates</em> (deletes) the cache entry rather than updating it — this avoids race conditions where a stale write overwrites a newer value.</p>`
+        },
+        {
+            title: 'Best Practices',
+            content: `<p>Caching done right is transformative — turning 50ms queries into 0.1ms reads. Done wrong, it introduces stale data bugs, memory leaks, and cascading failures. Follow these practices to cache effectively.</p>
+            <ul>
+                <li><strong>Cache-aside for reads</strong> — the simplest, most battle-tested pattern. Load into cache only on miss. Keeps the cache lean (only actually-requested data). Invalidate on write rather than update-in-place to avoid concurrency races.</li>
+                <li><strong>Write-through for consistency</strong> — when consumers read data immediately after writing and cannot tolerate any staleness. The write updates both the store and the cache atomically. Accept the added write latency in exchange for guaranteed read freshness.</li>
+                <li><strong>Set appropriate TTLs</strong> — no TTL means data stays forever (stale or consuming memory). Too short defeats caching. Match TTL to your data's acceptable staleness window: 5-30s for volatile data (scores, stock), 5-60min for semi-stable data (product details), hours for static reference data (country lists).</li>
+                <li><strong>Use cache tags for group invalidation</strong> — tag entries by entity or category (<code>product:123</code>, <code>category:electronics</code>). When a product updates, purge all entries tagged with its ID rather than tracking individual keys.</li>
+                <li><strong>Monitor hit ratio</strong> — a cache below 80% hit rate is providing marginal benefit. Track hits, misses, and evictions. A low hit rate means TTLs are too short, the working set doesn't fit in memory, or access patterns are too random for caching.</li>
+                <li><strong>Handle cache failures gracefully</strong> — the cache is an optimization, not a dependency. If Redis is down, degrade to database reads (slower but correct). Never let a cache outage become a total system outage.</li>
+            </ul>`,
+            code: `// Cache-aside with graceful degradation
+public async Task<Product?> GetProductAsync(int id)
+{
+    var key = $"product:{id}";
+    
+    // Try cache first (fast path)
+    try
+    {
+        var cached = await _cache.GetAsync<Product>(key);
+        if (cached != null) return cached;
+    }
+    catch (RedisConnectionException)
+    {
+        // Cache is down — degrade gracefully, don't throw
+        _logger.LogWarning("Redis unavailable, falling back to DB");
+    }
+
+    // Cache miss or cache down — go to source of truth
+    var product = await _db.Products.FindAsync(id);
+    if (product == null) return null;
+
+    // Try to populate cache (fire-and-forget on failure)
+    try
+    {
+        await _cache.SetAsync(key, product, new DistributedCacheEntryOptions
+        {
+            AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10),
+            SlidingExpiration = TimeSpan.FromMinutes(2)  // Extend TTL on access
+        });
+    }
+    catch (RedisConnectionException) { /* Cache write failed — acceptable */ }
+
+    return product;
+}
+
+// Tag-based invalidation (purge all entries for a product)
+public async Task InvalidateProductAsync(int productId)
+{
+    var tags = new[] { $"product:{productId}", $"catalog" };
+    foreach (var tag in tags)
+        await _cache.RemoveByTagAsync(tag);
+}`,
+            language: 'csharp'
+        },
+        {
+            title: 'Common Mistakes',
+            content: `<p>Caching bugs are insidious — they often don't crash your application but silently serve wrong data or destroy performance. These are the most common pitfalls in production systems.</p>
+            <ul>
+                <li><strong>Caching mutable objects (shared reference mutation)</strong> — in-memory caches (IMemoryCache) store references, not copies. If you cache an object and then mutate it elsewhere, the cached "copy" is also mutated. Always cache immutable objects or deep-clone before caching.</li>
+                <li><strong>No TTL (stale forever)</strong> — entries without expiration accumulate indefinitely. Data becomes stale, memory fills up, and eventually you're serving data from hours or days ago. Always set a TTL, even a generous one, as a safety net.</li>
+                <li><strong>Cache stampede on expiry</strong> — when a popular key expires, hundreds of concurrent requests all miss simultaneously and hammer the database to regenerate the same value. Use single-flight locking, stale-while-revalidate, or jittered TTLs to prevent this.</li>
+                <li><strong>Caching user-specific data globally</strong> — storing personalized or authenticated data in a shared cache key means one user sees another user's data. Always include the user identifier in the cache key for per-user data, or use <code>Cache-Control: private</code> for HTTP responses.</li>
+                <li><strong>Not handling cache unavailability</strong> — if your code throws when Redis is down, a cache outage becomes a total outage. Treat cache reads as best-effort: catch connection errors and fall back to the database. The system should be slower without cache, not broken.</li>
+            </ul>`,
+            code: `// MISTAKE: Caching a mutable object (in-memory)
+var product = await _db.GetProductAsync(id);
+_memoryCache.Set("product:1", product);
+product.Price = 0; // BUG! This mutates the cached object too!
+
+// FIX: Cache immutable records or clone
+public record ProductDto(int Id, string Name, decimal Price); // Immutable
+_memoryCache.Set("product:1", new ProductDto(p.Id, p.Name, p.Price));
+
+// MISTAKE: No TTL — stale data lives forever
+_cache.Set("config", config); // Never expires!
+
+// FIX: Always set TTL
+_cache.Set("config", config, TimeSpan.FromMinutes(15));
+
+// MISTAKE: User-specific data in a global key
+_cache.Set("user-profile", profile); // All users get the same profile!
+
+// FIX: Include user ID in key
+_cache.Set($"user-profile:{userId}", profile, TimeSpan.FromMinutes(5));
+
+// MISTAKE: Cache failure = total failure
+public async Task<Product> GetProduct(int id)
+{
+    var cached = await _redis.GetAsync<Product>($"product:{id}"); // Throws if Redis down!
+    return cached ?? await _db.FindAsync(id);
+}
+
+// FIX: Graceful degradation
+public async Task<Product> GetProduct(int id)
+{
+    try { return await _redis.GetAsync<Product>($"product:{id}") ?? throw new CacheMissException(); }
+    catch { return await _db.FindAsync(id); } // Always have a fallback
+}`,
+            language: 'csharp'
+        },
+        {
+            title: 'Interview Tips',
+            callout: { type: 'tip', title: 'What Interviewers Look For in Caching Questions', text: 'Know the three core patterns cold: cache-aside (app manages the cache, lazy-load on miss, invalidate on write), write-through (cache writes synchronously to the store before returning), and write-behind (cache returns immediately, flushes to store asynchronously — high throughput but risks data loss). Know when to choose Redis vs IMemoryCache: Redis when you need shared state across instances, persistence, or pub/sub; IMemoryCache for hot per-instance data with microsecond access. Have a clear answer for cache invalidation strategies: TTL-based (simple, eventual staleness), event-driven (immediate, complex), tag-based (group purge), and versioned keys (never stale but cold start).' },
+            content: `<p>Caching questions reveal whether a candidate thinks about systems holistically — not just "how to read from Redis" but the full lifecycle: what to cache, how long, how to invalidate, what happens when the cache fails, and how to prove it's working.</p>
+            <ul>
+                <li><strong>Structure your answer by data type</strong> — "For product catalog data I'd use cache-aside with Redis, 10-minute TTL, event-driven invalidation on update." This shows real-world judgment, not just textbook patterns.</li>
+                <li><strong>Always address invalidation</strong> — caching is easy, invalidation is the hard problem. Interviewers are testing whether you understand that serving stale data has business consequences.</li>
+                <li><strong>Mention failure modes</strong> — what happens when Redis is down? What about stampede? Cold start? Showing awareness of failure scenarios demonstrates production experience.</li>
+                <li><strong>Quantify the benefit</strong> — "This takes our P99 from 200ms to 5ms" or "hit rate of 95% means only 5% of requests touch the DB." Numbers show engineering discipline.</li>
+            </ul>`
+        },
+        {
+            title: 'Key Takeaways',
+            content: `<p>The essential mental model for caching in production:</p>
+            <ul>
+                <li><strong>Caching is a trade-off: freshness vs speed</strong> — every cached value is potentially stale. The question is always "how stale is acceptable?" and the answer varies by data type (1 second for scores, 1 hour for catalog, 1 day for reference data).</li>
+                <li><strong>Invalidation is the hardest problem</strong> — Phil Karlton's famous quote holds true. Event-driven invalidation gives freshness but adds complexity. TTL-based is simple but guarantees staleness. Most production systems combine both: short TTL as a safety net + event-driven for immediate consistency.</li>
+                <li><strong>Always have a fallback when cache is down</strong> — the system should be slower without cache, never broken. Treat the cache as an acceleration layer, not a required dependency. Catch connection errors, log them, and fall through to the database.</li>
+                <li><strong>Measure hit ratio to prove value</strong> — a cache you can't measure might be hurting more than helping (memory cost, code complexity, stale data risk). Target 85%+ hit rate for hot paths. If below 70%, re-evaluate what you're caching and your TTL strategy.</li>
+            </ul>`,
+            table: {
+                headers: ['Principle', 'Implication', 'Action'],
+                rows: [
+                    ['Freshness vs Speed', 'Every cache adds staleness risk', 'Set TTL matching business tolerance'],
+                    ['Invalidation is hard', 'No perfect solution exists', 'Combine TTL + event-driven + tags'],
+                    ['Cache is not a dependency', 'Outage should degrade, not crash', 'Wrap cache calls in try/catch, fallback to DB'],
+                    ['Measure everything', 'Unmeasured cache may be useless', 'Track hit rate, latency, evictions, memory'],
+                    ['Stampede protection', 'Popular key expiry causes DB pile-on', 'Single-flight lock + stale-while-revalidate'],
+                    ['Layer appropriately', 'One cache tier is rarely enough', 'L1 (memory) + L2 (Redis) + CDN (edge)']
+                ]
+            }
         }
     ],
     questions: [

@@ -162,7 +162,8 @@ const SiteMap = {
                     title: 'Software Quality',
                     items: [
                         { id: 'maintainability', title: 'Maintainability & Code Quality', icon: Icons.settings, keywords: ['maintainability', 'code quality', 'technical debt', 'coupling', 'cohesion', 'cyclomatic complexity', 'code metrics', 'static analysis', 'sonarqube'], badge: '30', topics: ['Coupling & Cohesion', 'Cyclomatic Complexity', 'Technical Debt', 'Code Metrics', 'Static Analysis', 'Maintainability Index', 'Code Ownership'], dataFile: 'data/levels/level-03/maintainability.js' },
-                        { id: 'software-quality-attributes', title: 'Software Quality Attributes', icon: Icons.award, keywords: ['quality attributes', 'ilities', 'reliability', 'availability', 'scalability', 'testability', 'deployability', 'security', 'nonfunctional', 'iso 25010'], badge: '35', topics: ['Reliability', 'Availability', 'Scalability', 'Maintainability', 'Testability', 'Deployability', 'Performance', 'Security'], dataFile: 'data/levels/level-03/software-quality-attributes.js' }
+                        { id: 'software-quality-attributes', title: 'Software Quality Attributes', icon: Icons.award, keywords: ['quality attributes', 'ilities', 'reliability', 'availability', 'scalability', 'testability', 'deployability', 'security', 'nonfunctional', 'iso 25010'], badge: '35', topics: ['Reliability', 'Availability', 'Scalability', 'Maintainability', 'Testability', 'Deployability', 'Performance', 'Security'], dataFile: 'data/levels/level-03/software-quality-attributes.js' },
+                        { id: 'engineering-laws', title: 'Engineering Laws & Principles', icon: Icons.zap, keywords: ['conway', 'brooks', 'murphy', 'goodhart', 'gall', 'pareto', 'amdahl', 'little', 'hofstadter', 'law'], badge: '25', topics: ["Conway's Law", "Brooks' Law", "Goodhart's Law", "Gall's Law", "Amdahl's Law", "Little's Law", 'Pareto Principle'], dataFile: 'data/levels/level-03/engineering-laws.js' }
                     ]
                 }
             ]
@@ -464,6 +465,24 @@ const SiteMap = {
                         { id: 'ai-integration', title: 'AI Integration Patterns', icon: Icons.layers, keywords: ['openai api', 'embeddings', 'fine-tuning', 'guardrails', 'rag', 'function calling', 'structured output', 'prompt injection'], badge: '25', topics: ['LLM APIs', 'RAG', 'Function Calling', 'Structured Output', 'Streaming', 'Guardrails', 'Cost/Latency'], dataFile: 'data/levels/level-12/ai-integration.js' },
                         { id: 'ai-responsible', title: 'Responsible AI', icon: Icons.shield, keywords: ['ethics', 'bias', 'fairness', 'transparency', 'governance', 'explainability', 'privacy', 'accountability'], badge: '20', topics: ['Fairness & Bias', 'Transparency', 'Explainability', 'Privacy', 'Human Oversight', 'Governance', 'Regulation'], dataFile: 'data/levels/level-12/ai-responsible.js' }
                     ]
+                },
+                {
+                    id: 'ai-engineering-2',
+                    title: 'AI Engineering 2.0',
+                    items: [
+                        { id: 'ai-mcp-agents', title: 'MCP, Agents & Multi-Agent Systems', icon: Icons.cpu, keywords: ['mcp', 'model context protocol', 'multi-agent', 'a2a', 'agent to agent', 'tool calling', 'orchestration', 'semantic kernel advanced'], badge: '35', topics: ['MCP Protocol', 'Multi-Agent Systems', 'A2A Communication', 'Tool Calling', 'Agent Orchestration', 'Semantic Kernel Advanced'], dataFile: 'data/levels/level-12/ai-mcp-agents.js' },
+                        { id: 'ai-rag-advanced', title: 'Advanced RAG & Memory', icon: Icons.database, keywords: ['rag advanced', 'knowledge graph', 'hybrid search', 'vector database', 'memory architecture', 'chunking', 'reranking', 'pinecone', 'qdrant', 'weaviate'], badge: '30', topics: ['Memory Architectures', 'Knowledge Graph + RAG', 'Hybrid Search', 'Vector DB Comparison', 'Chunking Strategies', 'Re-ranking'], dataFile: 'data/levels/level-12/ai-rag-advanced.js' },
+                        { id: 'ai-production', title: 'AI in Production', icon: Icons.shield, keywords: ['ai observability', 'guardrails', 'hallucination', 'cost optimization', 'model routing', 'evaluation', 'prompt caching', 'ai security', 'llm ops'], badge: '30', topics: ['AI Observability', 'Guardrails', 'Hallucination Detection', 'Cost Optimization', 'Model Routing', 'AI Evaluation', 'Prompt Caching'], dataFile: 'data/levels/level-12/ai-production.js' }
+                    ]
+                },
+                {
+                    id: 'ai-practices',
+                    title: 'AI Engineering Practices',
+                    items: [
+                        { id: 'ai-prompt-engineering', title: 'Prompt Engineering Deep Dive', icon: Icons.code, keywords: ['prompt engineering', 'zero-shot', 'few-shot', 'chain of thought', 'tree of thought', 'structured output', 'prompt chaining', 'prompt versioning', 'rice', 'role prompting'], badge: '30', topics: ['Zero/Few-Shot', 'Chain of Thought', 'Tree of Thought', 'Structured Outputs', 'Prompt Chaining', 'Prompt Versioning', 'Role Prompting'], dataFile: 'data/levels/level-12/ai-prompt-engineering.js' },
+                        { id: 'ai-assisted-development', title: 'AI-Assisted Development & SDLC', icon: Icons.zap, keywords: ['copilot', 'cursor', 'ai pair programming', 'ai code review', 'ai testing', 'ai sdlc', 'ai documentation', 'ai debugging', 'windsurf', 'kiro'], badge: '25', topics: ['AI Pair Programming', 'Copilot/Cursor/Kiro', 'AI Code Reviews', 'AI Testing', 'AI-Assisted SDLC', 'AI Documentation'], dataFile: 'data/levels/level-12/ai-assisted-development.js' },
+                        { id: 'ai-architecture-patterns', title: 'AI Architecture Patterns', icon: Icons.layers, keywords: ['ai microservices', 'ai gateway', 'model routing', 'ai caching', 'fallback models', 'ai pipeline', 'orchestration', 'ai system design'], badge: '30', topics: ['AI Gateway', 'Model Routing', 'AI Caching', 'Fallback Patterns', 'AI Microservices', 'AI System Design'], dataFile: 'data/levels/level-12/ai-architecture-patterns.js' }
+                    ]
                 }
             ]
         },
@@ -519,7 +538,9 @@ const SiteMap = {
                         { id: 'feature-flags', title: 'Feature Flags & Rollouts', icon: Icons.settings, keywords: ['feature flag', 'progressive rollout', 'a/b test', 'canary', 'kill switch', 'feature toggle', 'deploy release'], badge: '20', topics: ['Deploy vs Release', 'Flag Types', 'Progressive Rollout', 'Kill Switches', 'A/B Testing', 'Flag Debt'], dataFile: 'data/levels/level-14/feature-flags.js' },
                         { id: 'zero-downtime', title: 'Zero-Downtime Deployments', icon: Icons.clock, keywords: ['zero downtime', 'migration', 'backward compatible', 'rolling', 'blue-green', 'expand contract', 'schema'], badge: '20', topics: ['Rolling/Blue-Green/Canary', 'Version Coexistence', 'Backward Compatibility', 'Expand-Contract', 'Online Migrations', 'Graceful Shutdown'], dataFile: 'data/levels/level-14/zero-downtime.js' },
                         { id: 'production-debugging', title: 'Production Debugging', icon: Icons.search, keywords: ['debugging', 'flame graph', 'heap dump', 'profiling', 'distributed tracing', 'memory leak', 'cpu spike', 'thread dump', 'live diagnosis'], badge: '30', topics: ['Flame Graphs', 'Heap Dumps', 'Thread Dumps', 'Memory Leak Diagnosis', 'CPU Profiling', 'Distributed Debugging', 'Log Correlation', 'Live Traffic Replay'], dataFile: 'data/levels/level-14/production-debugging.js' },
-                        { id: 'on-call-survival', title: 'On-Call Survival & Ops Excellence', icon: Icons.alertTriangle, keywords: ['on-call', 'pager', 'runbook', 'escalation', 'alert fatigue', 'rotation', 'toil', 'operational excellence', 'handoff'], badge: '25', topics: ['Rotation Design', 'Alert Quality', 'Runbooks', 'Escalation Paths', 'Toil Reduction', 'Handoff Protocols', 'Burnout Prevention', 'Operational Review'], dataFile: 'data/levels/level-14/on-call-survival.js' }
+                        { id: 'on-call-survival', title: 'On-Call Survival & Ops Excellence', icon: Icons.alertTriangle, keywords: ['on-call', 'pager', 'runbook', 'escalation', 'alert fatigue', 'rotation', 'toil', 'operational excellence', 'handoff'], badge: '25', topics: ['Rotation Design', 'Alert Quality', 'Runbooks', 'Escalation Paths', 'Toil Reduction', 'Handoff Protocols', 'Burnout Prevention', 'Operational Review'], dataFile: 'data/levels/level-14/on-call-survival.js' },
+                        { id: 'production-debugging-academy', title: 'Production Debugging Academy', icon: Icons.search, keywords: ['cpu spike', 'memory leak', 'deadlock', 'socket exhaustion', 'thread starvation', 'gc pressure', 'dns failure', 'kafka lag', 'crashloopbackoff'], badge: '35', topics: ['CPU 100%', 'Memory Leak', 'Deadlock', 'Socket Exhaustion', 'Thread Starvation', 'GC Pressure', 'DNS Failure', 'Kafka Lag'], dataFile: 'data/levels/level-14/production-debugging-academy.js' },
+                        { id: 'failure-case-studies', title: 'Failure Case Studies', icon: Icons.alertTriangle, keywords: ['knight capital', 'healthcare.gov', 'gitlab deletion', 'crowdstrike', 'aws outage', 'facebook outage', 'incident', 'postmortem'], badge: '25', topics: ['Knight Capital $440M', 'Healthcare.gov', 'GitLab DB Deletion', 'CrowdStrike 2024', 'AWS us-east-1', 'Facebook 6hr Outage'], dataFile: 'data/levels/level-14/failure-case-studies.js' }
                     ]
                 }
             ]
@@ -565,7 +586,8 @@ const SiteMap = {
                     items: [
                         { id: 'behavioral-interviews', title: 'Behavioral Interviews', icon: Icons.users, keywords: ['behavioral', 'star', 'situation', 'leadership', 'conflict', 'story bank', 'failure'], badge: '20', topics: ['STAR Method', 'Story Bank', 'Leadership Principles', 'Conflict/Failure Questions', 'I vs We', 'Authenticity'], dataFile: 'data/levels/level-16/behavioral-interviews.js' },
                         { id: 'system-design-interviews', title: 'System Design Interviews', icon: Icons.grid, keywords: ['system design interview', 'whiteboard', 'trade-offs', 'estimation', 'communication', 'depth'], badge: '20', topics: ['Driving the Round', 'Time Management', 'Depth vs Breadth', 'Thinking Out Loud', 'Curveballs', 'Level Signals'], dataFile: 'data/levels/level-16/system-design-interviews.js' },
-                        { id: 'coding-interviews', title: 'Coding Interviews', icon: Icons.code, keywords: ['leetcode', 'algorithm', 'data structure', 'problem solving', 'umpire', 'patterns', 'big-o'], badge: '25', topics: ['UMPIRE Framework', 'Patterns', 'Communication', 'Big-O', 'Edge Cases', 'When Stuck', 'Prep Strategy'], dataFile: 'data/levels/level-16/coding-interviews.js' }
+                        { id: 'coding-interviews', title: 'Coding Interviews', icon: Icons.code, keywords: ['leetcode', 'algorithm', 'data structure', 'problem solving', 'umpire', 'patterns', 'big-o'], badge: '25', topics: ['UMPIRE Framework', 'Patterns', 'Communication', 'Big-O', 'Edge Cases', 'When Stuck', 'Prep Strategy'], dataFile: 'data/levels/level-16/coding-interviews.js' },
+                        { id: 'scenario-based-questions', title: 'Scenario-Based Questions', icon: Icons.target, keywords: ['scenario', 'production', 'debugging', 'scalability', 'architecture', 'real-world', 'investigation', 'performance'], badge: '25', topics: ['API Performance', 'Concurrency', 'Scalability', 'Security', 'Caching', 'Real-Time', 'CI/CD', 'Rollback'], dataFile: 'data/levels/level-16/scenario-based-questions.js' }
                     ]
                 },
                 {
@@ -623,7 +645,62 @@ const SiteMap = {
                         { id: 'data-mesh', title: 'Data Mesh & Data Architecture', icon: Icons.database, keywords: ['data mesh', 'data product', 'domain ownership', 'federated governance', 'data lakehouse', 'data contract', 'analytical data', 'self-serve platform'], badge: '30', topics: ['Data Mesh Principles', 'Domain Data Ownership', 'Data as a Product', 'Federated Governance', 'Self-Serve Platform', 'Data Contracts', 'When NOT Data Mesh'], dataFile: 'data/levels/level-17/data-mesh.js' },
                         { id: 'multi-region', title: 'Multi-Region & Global Architecture', icon: Icons.globe, keywords: ['multi-region', 'active-active', 'geo-replication', 'conflict resolution', 'latency budget', 'global load balancer', 'data sovereignty', 'crdt', 'eventual consistency'], badge: '35', topics: ['Active-Active vs Active-Passive', 'Geo-Replication', 'Conflict Resolution (CRDTs)', 'Latency Budgets', 'Data Sovereignty', 'Global Traffic Management', 'Failover Patterns'], dataFile: 'data/levels/level-17/multi-region.js' },
                         { id: 'architecture-communication', title: 'Architecture Communication', icon: Icons.users, keywords: ['architecture document', 'c4 model', 'stakeholder', 'rfc', 'adr', 'diagram', 'presenting architecture', 'influence', 'executive summary'], badge: '25', topics: ['C4 Model', 'Architecture Documents', 'Presenting to Executives', 'RFCs', 'Diagramming Standards', 'Influencing Decisions', 'Writing ADRs'], dataFile: 'data/levels/level-17/architecture-communication.js' },
-                        { id: 'production-incident-architecture', title: 'Production Incident Architecture', icon: Icons.alertTriangle, keywords: ['incident', 'debuggable', 'diagnosable', 'recoverable', 'blast radius', 'circuit breaker', 'graceful degradation', 'feature kill switch', 'rollback'], badge: '30', topics: ['Designing for Debuggability', 'Blast Radius Containment', 'Graceful Degradation', 'Kill Switches', 'Automated Rollback', 'Incident-Proof Architecture', 'Recovery Patterns'], dataFile: 'data/levels/level-17/production-incident-architecture.js' }
+                        { id: 'production-incident-architecture', title: 'Production Incident Architecture', icon: Icons.alertTriangle, keywords: ['incident', 'debuggable', 'diagnosable', 'recoverable', 'blast radius', 'circuit breaker', 'graceful degradation', 'feature kill switch', 'rollback'], badge: '30', topics: ['Designing for Debuggability', 'Blast Radius Containment', 'Graceful Degradation', 'Kill Switches', 'Automated Rollback', 'Incident-Proof Architecture', 'Recovery Patterns'], dataFile: 'data/levels/level-17/production-incident-architecture.js' },
+                        { id: 'architecture-decisions-library', title: 'Architecture Decision Library', icon: Icons.target, keywords: ['kafka vs rabbitmq', 'sql vs nosql', 'monolith vs microservices', 'redis vs memcached', 'rest vs grpc', 'cqrs vs crud', 'trade-off', 'decision'], badge: '35', topics: ['Kafka vs RabbitMQ', 'SQL vs NoSQL', 'Monolith vs Microservices', 'REST vs gRPC', 'CQRS vs CRUD', 'K8s vs Container Apps'], dataFile: 'data/levels/level-17/architecture-decisions-library.js' },
+                        { id: 'technology-comparisons', title: 'Technology Comparison Center', icon: Icons.grid, keywords: ['comparison', 'redis vs memcached', 'angular vs react', 'docker vs podman', 'cosmos vs mongodb', 'blazor vs angular', 'azure vs aws'], badge: '30', topics: ['Redis vs Memcached', 'Angular vs React', 'Azure vs AWS', 'Cosmos vs MongoDB', 'SignalR vs WebSockets', 'Docker Compose vs K8s'], dataFile: 'data/levels/level-17/technology-comparisons.js' }
+                    ]
+                }
+            ]
+        },
+
+        // ─── LEVEL 18: Enterprise Software Delivery ───────────────────
+        {
+            level: 18,
+            title: 'Enterprise Software Delivery',
+            description: 'SDLC, team structures, enterprise terminology, release management, and delivery metrics',
+            groups: [
+                {
+                    id: 'enterprise-sdlc',
+                    title: 'SDLC & Agile',
+                    items: [
+                        { id: 'enterprise-sdlc', title: 'SDLC & Agile Frameworks', icon: Icons.shuffle, keywords: ['sdlc', 'agile', 'scrum', 'kanban', 'safe', 'sprint', 'velocity', 'estimation', 'story points', 'waterfall'], badge: '35', topics: ['Waterfall vs Agile', 'Scrum', 'Kanban', 'SAFe', 'Sprint Ceremonies', 'Story Points', 'Velocity', 'Estimation'], dataFile: 'data/levels/level-18/enterprise-sdlc.js' }
+                    ]
+                },
+                {
+                    id: 'enterprise-teams',
+                    title: 'Teams & Terminology',
+                    items: [
+                        { id: 'enterprise-teams', title: 'Team Structures & Enterprise Terms', icon: Icons.users, keywords: ['squad', 'pod', 'tribe', 'team topologies', 'bau', 'rca', 'uat', 'okr', 'kpi', 'raci', 'enterprise jargon'], badge: '30', topics: ['Squads/Pods/Tribes', 'Team Topologies', 'Enterprise Terminology', 'RAG Status', 'OKRs/KPIs', 'RACI Matrix'], dataFile: 'data/levels/level-18/enterprise-teams.js' }
+                    ]
+                },
+                {
+                    id: 'enterprise-delivery',
+                    title: 'Delivery & Governance',
+                    items: [
+                        { id: 'enterprise-delivery', title: 'Release, QA, Incidents & Metrics', icon: Icons.trendingUp, keywords: ['release management', 'hotfix', 'qa', 'smoke test', 'regression', 'incident management', 'dora', 'space', 'governance', 'compliance', 'togaf'], badge: '35', topics: ['Release Management', 'QA Terminology', 'Incident Severity', 'DORA Metrics', 'SPACE Framework', 'Governance', 'Enterprise Architecture'], dataFile: 'data/levels/level-18/enterprise-delivery.js' }
+                    ]
+                }
+            ]
+        },
+
+        // ─── LEVEL 19: Networking & Infrastructure ────────────────────
+        {
+            level: 19,
+            title: 'Networking & Infrastructure',
+            description: 'Networking fundamentals, load balancing, DNS, CDN, service mesh, and production networking scenarios',
+            groups: [
+                {
+                    id: 'networking-core',
+                    title: 'Networking Fundamentals',
+                    items: [
+                        { id: 'networking-fundamentals', title: 'Networking & Load Balancing', icon: Icons.globe, keywords: ['osi', 'tcp', 'udp', 'dns', 'http', 'load balancer', 'round robin', 'consistent hashing', 'tls', 'proxy', 'caching'], badge: '35', topics: ['OSI/TCP-IP', 'HTTP Lifecycle', 'DNS Deep Dive', 'Load Balancing Algorithms', 'TLS Handshake', 'Caching Layers', 'Connection Pooling'], dataFile: 'data/levels/level-19/networking-fundamentals.js' }
+                    ]
+                },
+                {
+                    id: 'networking-production',
+                    title: 'Production Networking',
+                    items: [
+                        { id: 'networking-production', title: 'CDN, Service Mesh & Production Scenarios', icon: Icons.server, keywords: ['cdn', 'reverse proxy', 'nginx', 'service mesh', 'istio', 'kubernetes networking', 'ingress', 'nat', 'vpc', 'production scenarios'], badge: '30', topics: ['Reverse Proxy', 'CDN', 'Service Mesh', 'K8s Networking', 'VPC/VNet', 'Real Production Scenarios'], dataFile: 'data/levels/level-19/networking-production.js' }
                     ]
                 }
             ]
