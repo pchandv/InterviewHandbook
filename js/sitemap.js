@@ -489,9 +489,95 @@ const SiteMap = {
             ]
         },
 
-        // ─── LEVEL 13: System Design ──────────────────────────────────
+        // ─── LEVEL 13: Cloud-Native Engineering ─────────────────────────
         {
             level: 13,
+            title: 'Cloud-Native Engineering',
+            description: 'Docker, Kubernetes, Terraform, CI/CD, and production cloud operations',
+            groups: [
+                {
+                    id: 'cloud-fundamentals',
+                    title: 'Cloud Fundamentals',
+                    items: [
+                        { id: 'cloud-basics', title: 'Cloud Computing Basics', icon: Icons.globe, keywords: ['cloud', 'iaas', 'paas', 'saas', 'faas', 'availability', 'regions', 'ha', 'dr', 'scalability', 'capex', 'opex'], badge: '15', topics: ['IaaS/PaaS/SaaS/FaaS', 'Regions & Zones', 'High Availability', 'Disaster Recovery', 'Scalability', 'CAPEX vs OPEX'], dataFile: 'data/levels/level-13/cloud-basics.js' }
+                    ]
+                },
+                {
+                    id: 'docker',
+                    title: 'Docker',
+                    items: [
+                        { id: 'docker-deep-dive', title: 'Docker Deep Dive', icon: Icons.box, keywords: ['docker', 'container', 'dockerfile', 'image', 'multi-stage', 'volume', 'network', 'compose', 'distroless', 'optimization'], badge: '25', topics: ['Images & Layers', 'Dockerfile', 'Multi-Stage Builds', 'Volumes', 'Networks', 'Compose', 'Security', 'Distroless'], dataFile: 'data/levels/level-13/docker-deep-dive.js' }
+                    ]
+                },
+                {
+                    id: 'kubernetes-core',
+                    title: 'Kubernetes Core',
+                    items: [
+                        { id: 'k8s-architecture', title: 'Kubernetes Architecture', icon: Icons.server, keywords: ['kubernetes', 'k8s', 'control plane', 'worker node', 'kubelet', 'etcd', 'api server', 'scheduler', 'controller manager'], badge: '25', topics: ['Control Plane', 'Worker Nodes', 'kubelet', 'etcd', 'API Server', 'Scheduler', 'Controller Manager'], dataFile: 'data/levels/level-13/k8s-architecture.js' },
+                        { id: 'k8s-workloads', title: 'Kubernetes Workloads', icon: Icons.layers, keywords: ['pod', 'replicaset', 'deployment', 'statefulset', 'daemonset', 'job', 'cronjob', 'workload'], badge: '25', topics: ['Pods', 'ReplicaSets', 'Deployments', 'StatefulSets', 'DaemonSets', 'Jobs', 'CronJobs'], dataFile: 'data/levels/level-13/k8s-workloads.js' }
+                    ]
+                },
+                {
+                    id: 'kubernetes-networking-storage',
+                    title: 'Kubernetes Networking & Storage',
+                    items: [
+                        { id: 'k8s-networking', title: 'Kubernetes Networking', icon: Icons.globe, keywords: ['k8s service', 'clusterip', 'nodeport', 'loadbalancer', 'ingress', 'network policy', 'dns', 'cni'], badge: '25', topics: ['Services', 'ClusterIP', 'NodePort', 'LoadBalancer', 'Ingress', 'NetworkPolicies', 'DNS'], dataFile: 'data/levels/level-13/k8s-networking.js' },
+                        { id: 'k8s-storage-scaling', title: 'Kubernetes Storage & Scaling', icon: Icons.database, keywords: ['pv', 'pvc', 'storageclass', 'hpa', 'vpa', 'cluster autoscaler', 'resource requests', 'limits'], badge: '25', topics: ['PV & PVC', 'StorageClasses', 'HPA', 'VPA', 'Cluster Autoscaler', 'Resource Requests/Limits'], dataFile: 'data/levels/level-13/k8s-storage-scaling.js' }
+                    ]
+                },
+                {
+                    id: 'kubernetes-production',
+                    title: 'Kubernetes Production',
+                    items: [
+                        { id: 'k8s-production', title: 'Kubernetes Production Operations', icon: Icons.shield, keywords: ['rolling update', 'rollback', 'health check', 'readiness probe', 'liveness probe', 'startup probe', 'configmap', 'secret'], badge: '25', topics: ['Rolling Updates', 'Rollbacks', 'Health Checks', 'Readiness/Liveness/Startup Probes', 'ConfigMaps', 'Secrets'], dataFile: 'data/levels/level-13/k8s-production.js' }
+                    ]
+                },
+                {
+                    id: 'kubernetes-security-debugging',
+                    title: 'Kubernetes Security & Debugging',
+                    items: [
+                        { id: 'k8s-security', title: 'Kubernetes Security', icon: Icons.shield, keywords: ['rbac', 'namespace', 'service account', 'pod security', 'network policy', 'secret management', 'admission controller'], badge: '20', topics: ['RBAC', 'Namespaces', 'Service Accounts', 'Pod Security', 'Network Policies', 'Admission Controllers'], dataFile: 'data/levels/level-13/k8s-security.js' },
+                        { id: 'k8s-debugging', title: 'Kubernetes Debugging', icon: Icons.search, keywords: ['crashloopbackoff', 'imagepullbackoff', 'pending', 'oomkilled', 'dns failure', 'kubectl', 'troubleshoot'], badge: '25', topics: ['CrashLoopBackOff', 'ImagePullBackOff', 'Pending Pods', 'OOMKilled', 'DNS Failures', 'Diagnostic Commands'], dataFile: 'data/levels/level-13/k8s-debugging.js' }
+                    ]
+                },
+                {
+                    id: 'terraform',
+                    title: 'Terraform',
+                    items: [
+                        { id: 'terraform-basics', title: 'Terraform Basics', icon: Icons.code, keywords: ['terraform', 'iac', 'hcl', 'provider', 'resource', 'variable', 'output', 'state', 'backend', 'workspace'], badge: '25', topics: ['IaC Concepts', 'HCL Syntax', 'Providers', 'Resources', 'Variables', 'Outputs', 'State', 'Backend'], dataFile: 'data/levels/level-13/terraform-basics.js' },
+                        { id: 'terraform-advanced', title: 'Terraform Advanced', icon: Icons.layers, keywords: ['terraform module', 'remote state', 'lifecycle', 'dynamic block', 'azure', 'aws', 'provisioning'], badge: '25', topics: ['Modules', 'Remote State', 'Lifecycle Rules', 'Dynamic Blocks', 'Azure Provisioning', 'AWS Provisioning', 'Best Practices'], dataFile: 'data/levels/level-13/terraform-advanced.js' }
+                    ]
+                },
+                {
+                    id: 'cicd-gitops',
+                    title: 'CI/CD & GitOps',
+                    items: [
+                        { id: 'cicd-pipelines', title: 'CI/CD Pipelines', icon: Icons.zap, keywords: ['github actions', 'azure devops', 'gitlab ci', 'pipeline', 'build', 'release', 'artifact', 'secret'], badge: '25', topics: ['GitHub Actions', 'Azure DevOps', 'GitLab CI', 'Build Pipelines', 'Release Pipelines', 'Secrets', 'Artifacts'], dataFile: 'data/levels/level-13/cicd-pipelines.js' },
+                        { id: 'gitops', title: 'GitOps', icon: Icons.code, keywords: ['gitops', 'argocd', 'flux', 'declarative', 'drift detection', 'reconciliation', 'pull-based'], badge: '20', topics: ['GitOps Principles', 'ArgoCD', 'Flux', 'Declarative Deployments', 'Drift Detection', 'Reconciliation'], dataFile: 'data/levels/level-13/gitops.js' }
+                    ]
+                },
+                {
+                    id: 'helm-service-mesh',
+                    title: 'Helm & Service Mesh',
+                    items: [
+                        { id: 'helm', title: 'Helm Charts', icon: Icons.box, keywords: ['helm', 'chart', 'template', 'values', 'dependency', 'release', 'upgrade', 'rollback'], badge: '20', topics: ['Charts', 'Templates', 'Values', 'Dependencies', 'Releases', 'Upgrades', 'Rollbacks'], dataFile: 'data/levels/level-13/helm.js' },
+                        { id: 'service-mesh', title: 'Service Mesh', icon: Icons.globe, keywords: ['istio', 'linkerd', 'sidecar', 'traffic management', 'mtls', 'envoy', 'service mesh'], badge: '20', topics: ['Istio', 'Linkerd', 'Sidecars', 'Traffic Management', 'mTLS', 'Observability'], dataFile: 'data/levels/level-13/service-mesh.js' }
+                    ]
+                },
+                {
+                    id: 'cloud-observability-architecture',
+                    title: 'Observability & Architecture',
+                    items: [
+                        { id: 'cloud-observability', title: 'Cloud Observability', icon: Icons.trendingUp, keywords: ['prometheus', 'grafana', 'loki', 'jaeger', 'opentelemetry', 'distributed tracing', 'alerts', 'metrics'], badge: '25', topics: ['Prometheus', 'Grafana', 'Loki', 'Jaeger', 'OpenTelemetry', 'Distributed Tracing', 'Alerts'], dataFile: 'data/levels/level-13/cloud-observability.js' },
+                        { id: 'cloud-architecture', title: 'Cloud Architecture Patterns', icon: Icons.layers, keywords: ['blue-green', 'canary', 'rolling update', 'feature flag', 'zero-downtime', 'dr', 'multi-region'], badge: '25', topics: ['Blue-Green', 'Canary', 'Rolling Updates', 'Feature Flags', 'Zero-Downtime', 'DR', 'Multi-Region'], dataFile: 'data/levels/level-13/cloud-architecture.js' },
+                        { id: 'production-troubleshooting', title: 'Production Troubleshooting', icon: Icons.alertTriangle, keywords: ['troubleshooting', 'diagnosis', 'root cause', 'symptoms', 'resolution', 'prevention', 'production issue'], badge: '30', topics: ['Symptom Analysis', 'Root Cause Identification', 'Diagnostic Commands', 'Resolution Patterns', 'Prevention Strategies', 'Incident Response'], dataFile: 'data/levels/level-13/production-troubleshooting.js' }
+                    ]
+                }
+            ]
+        },
+        // ─── LEVEL 15: System Design ──────────────────────────────────
+        {
+            level: 15,
             title: 'System Design',
             description: 'Real-world system design case studies and trade-off analysis',
             groups: [
@@ -518,9 +604,9 @@ const SiteMap = {
             ]
         },
 
-        // ─── LEVEL 14: Production Engineering ─────────────────────────
+        // ─── LEVEL 16: Production Engineering ─────────────────────────
         {
-            level: 14,
+            level: 16,
             title: 'Production Engineering',
             description: 'Incident management, SRE practices, and reliability',
             groups: [
@@ -548,9 +634,9 @@ const SiteMap = {
             ]
         },
 
-        // ─── LEVEL 15: Leadership ─────────────────────────────────────
+        // ─── LEVEL 17: Leadership ─────────────────────────────────────
         {
-            level: 15,
+            level: 17,
             title: 'Leadership',
             description: 'Technical leadership, mentoring, process, and estimation',
             groups: [
@@ -576,9 +662,9 @@ const SiteMap = {
             ]
         },
 
-        // ─── LEVEL 16: Career & Interview Mastery ─────────────────────
+        // ─── LEVEL 18: Career & Interview Mastery ─────────────────────
         {
-            level: 16,
+            level: 18,
             title: 'Career & Interview Mastery',
             description: 'Interview preparation, career growth, and industry readiness',
             groups: [
@@ -603,9 +689,9 @@ const SiteMap = {
             ]
         },
 
-        // ─── BONUS: Full-Stack & Architect Topics ─────────────────────
+        // ─── LEVEL 19: Full-Stack & Architect ─────────────────────
         {
-            level: 17,
+            level: 19,
             title: 'Full-Stack & Architect',
             description: 'End-to-end full-stack patterns, solution architecture, and principal engineer topics',
             groups: [
@@ -655,9 +741,9 @@ const SiteMap = {
             ]
         },
 
-        // ─── LEVEL 18: Enterprise Software Delivery ───────────────────
+        // ─── LEVEL 20: Enterprise Software Delivery ───────────────────
         {
-            level: 18,
+            level: 20,
             title: 'Enterprise Software Delivery',
             description: 'SDLC, team structures, enterprise terminology, release management, and delivery metrics',
             groups: [
@@ -685,9 +771,9 @@ const SiteMap = {
             ]
         },
 
-        // ─── LEVEL 19: Networking & Infrastructure ────────────────────
+        // ─── LEVEL 21: Networking & Infrastructure ────────────────────
         {
-            level: 19,
+            level: 21,
             title: 'Networking & Infrastructure',
             description: 'Networking fundamentals, load balancing, DNS, CDN, service mesh, and production networking scenarios',
             groups: [
