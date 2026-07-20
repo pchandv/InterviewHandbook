@@ -575,6 +575,46 @@ const SiteMap = {
                 }
             ]
         },
+ // Level 14: AI Engineering & Generative AI
+ {
+ level: 14,
+ title: 'AI Engineering & Generative AI',
+ description: 'LLMs, prompt engineering, RAG, AI agents, MCP, Semantic Kernel, responsible AI, and production AI systems',
+ groups: [
+ { id: 'ai-foundations-group', title: 'AI Foundations', items: [
+ { id: 'ai-foundations', title: 'AI & ML Foundations', icon: Icons.brain, keywords: ['ml', 'deep learning', 'genai', 'transformer', 'tokens', 'embeddings'], badge: '20', topics: ['ML vs DL vs GenAI', 'Transformers', 'Tokens', 'Embeddings'], dataFile: 'data/levels/level-14/ai-foundations.js' },
+ { id: 'prompt-engineering', title: 'Prompt Engineering', icon: Icons.edit, keywords: ['zero-shot', 'few-shot', 'chain-of-thought', 'cot', 'role prompting'], badge: '25', topics: ['Zero/Few-Shot', 'CoT', 'Role Prompting', 'Structured Outputs'], dataFile: 'data/levels/level-14/prompt-engineering.js' }
+ ] },
+ { id: 'ai-dev-group', title: 'AI-Assisted Development', items: [
+ { id: 'ai-assisted-dev', title: 'AI-Assisted Development', icon: Icons.code, keywords: ['copilot', 'chatgpt', 'claude', 'cursor'], badge: '20', topics: ['Copilot', 'ChatGPT', 'Claude', 'AI Code Review'], dataFile: 'data/levels/level-14/ai-assisted-dev.js' },
+ { id: 'ai-sdlc', title: 'AI in the SDLC', icon: Icons.layers, keywords: ['ai requirements', 'ai testing', 'ai documentation'], badge: '20', topics: ['AI Requirements', 'AI Testing', 'AI Monitoring'], dataFile: 'data/levels/level-14/ai-sdlc.js' }
+ ] },
+ { id: 'llm-rag-group', title: 'LLM Integration & RAG', items: [
+ { id: 'llm-integration', title: 'LLM API Integration', icon: Icons.zap, keywords: ['openai', 'azure openai', 'function calling', 'streaming'], badge: '25', topics: ['OpenAI API', 'Function Calling', 'Streaming'], dataFile: 'data/levels/level-14/llm-integration.js' },
+ { id: 'rag-fundamentals', title: 'RAG Fundamentals', icon: Icons.database, keywords: ['rag', 'chunking', 'embeddings', 'vector db'], badge: '25', topics: ['Chunking', 'Embeddings', 'Vector DBs', 'Semantic Search'], dataFile: 'data/levels/level-14/rag-fundamentals.js' },
+ { id: 'rag-advanced', title: 'RAG Advanced', icon: Icons.layers, keywords: ['reranking', 'metadata', 'evaluation'], badge: '20', topics: ['Reranking', 'RAG Patterns', 'Evaluation'], dataFile: 'data/levels/level-14/rag-advanced.js' }
+ ] },
+ { id: 'ai-agents-group', title: 'AI Agents & MCP', items: [
+ { id: 'mcp-protocol', title: 'Model Context Protocol', icon: Icons.globe, keywords: ['mcp', 'mcp server', 'tools', 'resources'], badge: '20', topics: ['MCP Architecture', 'Servers', 'Tools', 'Resources'], dataFile: 'data/levels/level-14/mcp-protocol.js' },
+ { id: 'ai-agents-fundamentals', title: 'AI Agents Fundamentals', icon: Icons.brain, keywords: ['agent', 'planning', 'reflection', 'memory'], badge: '25', topics: ['Planning', 'Reflection', 'Memory', 'Workflow Agents'], dataFile: 'data/levels/level-14/ai-agents-fundamentals.js' },
+ { id: 'ai-agents-advanced', title: 'AI Agents Advanced', icon: Icons.layers, keywords: ['multi-agent', 'a2a', 'guardrails', 'orchestration'], badge: '20', topics: ['Multi-Agent', 'A2A', 'Guardrails'], dataFile: 'data/levels/level-14/ai-agents-advanced.js' }
+ ] },
+ { id: 'ai-frameworks-group', title: 'AI Frameworks', items: [
+ { id: 'semantic-kernel', title: 'Semantic Kernel', icon: Icons.code, keywords: ['semantic kernel', 'sk', 'plugins', 'memory'], badge: '25', topics: ['Plugins', 'Memory', 'Planning', 'Multi-Agent'], dataFile: 'data/levels/level-14/semantic-kernel.js' },
+ { id: 'langchain-concepts', title: 'LangChain & LangGraph', icon: Icons.layers, keywords: ['langchain', 'langgraph', 'chains', 'agents'], badge: '20', topics: ['Chains', 'LangGraph', 'State Machines'], dataFile: 'data/levels/level-14/langchain-concepts.js' }
+ ] },
+ { id: 'ai-production-group', title: 'Production AI', items: [
+ { id: 'ai-architecture', title: 'AI System Architecture', icon: Icons.layers, keywords: ['ai gateway', 'model routing', 'ai observability'], badge: '25', topics: ['AI Gateway', 'Model Routing', 'AI Observability'], dataFile: 'data/levels/level-14/ai-architecture.js' },
+ { id: 'responsible-ai', title: 'Responsible AI', icon: Icons.shield, keywords: ['hallucinations', 'prompt injection', 'pii', 'bias', 'guardrails'], badge: '20', topics: ['Hallucinations', 'Prompt Injection', 'PII', 'Guardrails'], dataFile: 'data/levels/level-14/responsible-ai.js' },
+ { id: 'ai-performance', title: 'AI Performance & Cost', icon: Icons.trendingUp, keywords: ['token optimization', 'cost', 'latency', 'caching'], badge: '20', topics: ['Token Optimization', 'Cost', 'Latency', 'Caching'], dataFile: 'data/levels/level-14/ai-performance.js' }
+ ] },
+ { id: 'ai-projects-group', title: 'AI Projects & Operations', items: [
+ { id: 'ai-real-projects', title: 'AI Real-World Projects', icon: Icons.box, keywords: ['chatbot', 'document qa', 'code review', 'knowledge base'], badge: '25', topics: ['Chatbot', 'Document Q&A', 'Code Review AI'], dataFile: 'data/levels/level-14/ai-real-projects.js' },
+ { id: 'production-ai', title: 'Production AI Operations', icon: Icons.shield, keywords: ['ai monitoring', 'prompt testing', 'ai versioning', 'feedback'], badge: '25', topics: ['AI Monitoring', 'Prompt Testing', 'Versioning'], dataFile: 'data/levels/level-14/production-ai.js' }
+ ] }
+ ]
+ },
+
         // ─── LEVEL 15: System Design ──────────────────────────────────
         {
             level: 15,
